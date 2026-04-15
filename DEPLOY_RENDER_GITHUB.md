@@ -73,8 +73,9 @@ Notes:
 Après avoir rempli les variables:
 
 1. Cliquez sur Manual Deploy puis Deploy latest commit.
-2. Attendez que le statut passe à Live.
-3. Ouvrez l'URL Render générée.
+2. Au premier démarrage, le serveur copie automatiquement `data.json`, `carts.json`, `orders.json`, `branding.json`, `covers/`, `sons/` et `branding/` du dépôt vers le disque persistant si ce disque est encore vide.
+3. Attendez que le statut passe à Live.
+4. Ouvrez l'URL Render générée.
 
 ## 6. Vérifier après mise en ligne
 
@@ -112,6 +113,8 @@ Les fichiers suivants doivent vivre sur le disque Render et non seulement dans G
 - `branding/`
 
 Le projet est déjà prévu pour cela grâce à `STORAGE_DIR`.
+
+Au premier déploiement, le contenu actuel du dépôt sert d'initialisation. Ensuite, les modifications faites en production restent sur le disque Render et ne sont pas écrasées par les redéploiements.
 
 ## 9. Si GitHub Pages est proposé
 

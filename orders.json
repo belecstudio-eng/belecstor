@@ -1,304 +1,40 @@
 {
   "orders": [
     {
-      "id": "9aca09a0-9fcd-406e-ac6e-85444c284f15",
-      "fullName": "hgil",
+      "id": "e23c1b65-68f4-4d52-a1b0-9f421663f81a",
+      "fullName": "yanovljo",
       "email": "ekone5033@gmail.com",
       "paymentMethod": "wave",
-      "totalPrice": 220,
-      "itemCount": 1,
+      "totalPrice": 440,
+      "itemCount": 2,
       "status": "pending-payment",
-      "createdAt": "2026-04-14T23:25:38.819Z",
+      "createdAt": "2026-04-15T14:39:56.282Z",
       "items": [
         {
           "beatId": 7,
           "beatName": "IDS",
           "licenseKey": "exclusive",
           "licenseName": "Exclusif",
-          "deliveryFiles": [
-            "MP3",
-            "WAV",
-            "Trackout"
-          ],
-          "deliveryContract": "📄 Contrat de Licence (EXCLUSIVE)\n\nDE : STUDIO BELEC\nA : hgil (\"Artiste\")\nDATE DE L'ACCORD : 14 avril 2026\n\nLe Producteur accorde une licence exclusive pour le beat \"IDS\".\n\nDuree\n\nIllimitee.\n\nDroits\n\n* Utilisation illimitee (ventes, streams, clips, shows)\n* 0% royalties\n* 50% droits d'edition\n\nExclusivite\n\nLe Producteur s'engage a retirer le beat de la vente et a ne plus le proposer a d'autres.\n\nConditions\n\n* Credit obligatoire\n* Licence non transferable\n\nLe Producteur reste proprietaire de la composition.",
+          "deliveryFiles": [],
+          "deliveryContract": "",
+          "unitPrice": 220,
+          "quantity": 1
+        },
+        {
+          "beatId": 8,
+          "beatName": "RSKOQ",
+          "licenseKey": "exclusive",
+          "licenseName": "Exclusif",
+          "deliveryFiles": [],
+          "deliveryContract": "",
           "unitPrice": 220,
           "quantity": 1
         }
       ],
       "notification": {
-        "emailStatus": "sent",
-        "emailSentAt": "2026-04-14T23:25:41.028Z",
-        "emailError": ""
-      },
-      "customerEmails": {
-        "depositNumber": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T23:26:38.819Z",
-          "sentAt": "2026-04-14T23:26:41.230Z",
-          "error": ""
-        },
-        "paymentInstructions": {
-          "status": "scheduled",
-          "scheduledFor": "2026-04-14T23:26:38.819Z",
-          "sentAt": "",
-          "error": ""
-        },
-        "contract": {
-          "status": "pending",
-          "scheduledFor": "",
-          "sentAt": "",
-          "error": ""
-        }
-      }
-    },
-    {
-      "id": "b562bef6-2a75-459f-9ec3-cc82ab345216",
-      "fullName": "Test Admin HTML",
-      "email": "test@example.com",
-      "paymentMethod": "wave",
-      "totalPrice": 30,
-      "itemCount": 1,
-      "status": "pending-payment",
-      "createdAt": "2026-04-14T23:08:04.127Z",
-      "items": [
         {
-          "beatId": 1001,
-          "beatName": "Beat Admin HTML",
-          "licenseKey": "wav",
-          "licenseName": "Location WAV",
-          "deliveryFiles": [
-            "MP3",
-            "WAV"
-          ],
-          "deliveryContract": "Contrat admin HTML",
-          "unitPrice": 30,
-          "quantity": 1
+          "orders": []
         }
-      ],
-      "notification": {
-        "emailStatus": "sent",
-        "emailSentAt": "2026-04-14T23:08:06.447Z",
-        "emailError": ""
-      },
-      "customerEmails": {
-        "depositNumber": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T23:09:04.127Z",
-          "sentAt": "2026-04-14T23:09:07.567Z",
-          "error": ""
-        },
-        "paymentInstructions": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T23:09:34.127Z",
-          "sentAt": "2026-04-14T23:09:36.321Z",
-          "error": ""
-        },
-        "contract": {
-          "status": "pending",
-          "scheduledFor": "",
-          "sentAt": "",
-          "error": ""
-        }
-      }
-    },
-    {
-      "id": "b7427a3a-55d2-4f68-ad84-1af55a3f1102",
-      "fullName": "yanovljo",
-      "email": "ekone5033@gmail.com",
-      "paymentMethod": "wave",
-      "totalPrice": 160,
-      "itemCount": 2,
-      "status": "pending-payment",
-      "createdAt": "2026-04-14T22:56:17.570Z",
-      "items": [
-        {
-          "beatId": 6,
-          "beatName": "ryz'y",
-          "licenseKey": "wav-stems",
-          "licenseName": "Location de STEMS",
-          "deliveryFiles": [],
-          "deliveryContract": "",
-          "unitPrice": 80,
-          "quantity": 1
-        },
-        {
-          "beatId": 7,
-          "beatName": "IDS",
-          "licenseKey": "wav-stems",
-          "licenseName": "Location de STEMS",
-          "deliveryFiles": [
-            "MP3",
-            "WAV",
-            "Trackout"
-          ],
-          "deliveryContract": "📄 Contrat de Licence (STEMS)\n\nDE : STUDIO BELEC\nA : yanovljo (\"Artiste\")\nDATE DE L'ACCORD : 14 avril 2026\n\nLe Producteur accorde une licence non exclusive avec acces aux pistes separees (stems).\n\nDuree\n\nValable 2 ans.\n\nLimites\n\n* 2 500 ventes / telechargements\n* Streams illimites\n* 2 clips video\n* Performances publiques etendues\n\nDroits\n\n* 0% royalties\n* 50% droits d'edition\n\nConditions\n\n* Credit obligatoire\n* Modification autorisee (mix/master uniquement)\n* Revente du beat interdite\n\nLe Producteur conserve tous les droits.",
-          "unitPrice": 80,
-          "quantity": 1
-        }
-      ],
-      "notification": {
-        "emailStatus": "sent",
-        "emailSentAt": "2026-04-14T22:56:19.533Z",
-        "emailError": ""
-      },
-      "customerEmails": {
-        "depositNumber": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T22:57:17.570Z",
-          "sentAt": "2026-04-14T23:08:01.852Z",
-          "error": ""
-        },
-        "paymentInstructions": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T22:57:47.570Z",
-          "sentAt": "2026-04-14T23:08:34.819Z",
-          "error": ""
-        },
-        "contract": {
-          "status": "sent",
-          "scheduledFor": "",
-          "sentAt": "2026-04-14T23:07:25.878Z",
-          "error": ""
-        }
-      }
-    },
-    {
-      "id": "2015ba4f-df61-407d-9fcb-85c809e8f930",
-      "fullName": "Test Client",
-      "email": "test@example.com",
-      "paymentMethod": "wave",
-      "totalPrice": 45,
-      "itemCount": 1,
-      "status": "pending-payment",
-      "createdAt": "2026-04-14T22:45:50.967Z",
-      "items": [
-        {
-          "beatId": 999,
-          "beatName": "Test Beat",
-          "licenseKey": "wav",
-          "licenseName": "Location WAV",
-          "deliveryFiles": [
-            "MP3",
-            "WAV"
-          ],
-          "deliveryContract": "Contrat test pour Test Client",
-          "unitPrice": 45,
-          "quantity": 1
-        }
-      ],
-      "notification": {
-        "emailStatus": "sent",
-        "emailSentAt": "2026-04-14T22:45:55.521Z",
-        "emailError": ""
-      },
-      "customerEmails": {
-        "depositNumber": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T22:46:50.967Z",
-          "sentAt": "2026-04-14T23:12:21.167Z",
-          "error": ""
-        },
-        "paymentInstructions": {
-          "status": "sent",
-          "scheduledFor": "2026-04-14T22:47:20.967Z",
-          "sentAt": "2026-04-14T23:12:22.976Z",
-          "error": ""
-        },
-        "contract": {
-          "status": "sent",
-          "scheduledFor": "",
-          "sentAt": "2026-04-14T23:12:25.376Z",
-          "error": ""
-        }
-      }
-    },
-    {
-      "id": "9395b417-03c1-4151-8456-8db827e4e439",
-      "fullName": "yanovljo",
-      "email": "ekone5033@gmail.com",
-      "paymentMethod": "taptapsend",
-      "totalPrice": 80,
-      "itemCount": 1,
-      "status": "pending-payment",
-      "createdAt": "2026-04-14T22:30:29.772Z",
-      "items": [
-        {
-          "beatId": 6,
-          "beatName": "ryz'y",
-          "licenseKey": "wav-stems",
-          "licenseName": "Location de STEMS",
-          "deliveryFiles": [],
-          "deliveryContract": "",
-          "unitPrice": 80,
-          "quantity": 1
-        }
-      ],
-      "notification": {
-        "emailStatus": "sent",
-        "emailSentAt": "2026-04-14T22:30:31.791Z",
-        "emailError": ""
-      },
-      "customerEmails": {
-        "depositNumber": {
-          "status": "not-scheduled",
-          "scheduledFor": "2026-04-14T22:31:29.772Z",
-          "sentAt": "",
-          "error": ""
-        },
-        "paymentInstructions": {
-          "status": "not-scheduled",
-          "scheduledFor": "2026-04-14T22:31:59.772Z",
-          "sentAt": "",
-          "error": ""
-        },
-        "contract": {
-          "status": "sent",
-          "scheduledFor": "",
-          "sentAt": "2026-04-14T23:02:06.250Z",
-          "error": ""
-        }
-      }
-    },
-    {
-      "id": "04ed7720-577d-43c2-881f-63373a8693e7",
-      "fullName": "lole",
-      "email": "lole45@gmail.com",
-      "paymentMethod": "wave",
-      "totalPrice": 80,
-      "itemCount": 1,
-      "status": "pending-payment",
-      "createdAt": "2026-04-14T21:45:44.066Z",
-      "items": [
-        {
-          "beatId": 6,
-          "beatName": "ryz'y",
-          "licenseKey": "wav-stems",
-          "licenseName": "Location de STEMS",
-          "deliveryFiles": [],
-          "deliveryContract": "",
-          "unitPrice": 80,
-          "quantity": 1
-        }
-      ],
-      "notification": {
-        "emailStatus": "sent",
-        "emailSentAt": "2026-04-14T21:45:45.812Z",
-        "emailError": ""
-      },
-      "customerEmails": {
-        "depositNumber": {
-          "status": "not-scheduled",
-          "scheduledFor": "2026-04-14T21:46:44.066Z",
-          "sentAt": "",
-          "error": ""
-        },
-        "paymentInstructions": {
-          "status": "not-scheduled",
-          "scheduledFor": "2026-04-14T21:47:14.066Z",
-          "sentAt": "",
-          "error": ""
-        },
-        "contract": {
           "status": "pending",
           "scheduledFor": "",
           "sentAt": "",

@@ -1341,3 +1341,193 @@ body[data-theme="midnight"] .warning-box {
 
 @media (max-width: 1024px) {
 }
+
+@media (max-width: 768px) {
+    .product-detail > .container {
+        max-width: 100%;
+        padding: 0 14px;
+    }
+
+    .product-layout {
+        gap: 1.25rem;
+    }
+
+    .product-left,
+    .licenses-section,
+    .product-info {
+        max-width: 100%;
+    }
+
+    .product-image-and-player,
+    .product-image-wrapper {
+        width: min(100%, 280px);
+    }
+
+    .product-image-play {
+        width: 64px;
+        height: 64px;
+    }
+
+    .product-title {
+        font-size: clamp(1.7rem, 7vw, 2.2rem);
+    }
+
+    .producer-name {
+        font-size: 0.88rem;
+    }
+
+    .price-section {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: center;
+    }
+
+    .price {
+        font-size: clamp(1.95rem, 9vw, 2.45rem);
+    }
+
+    .tax-info {
+        font-size: 0.95rem;
+    }
+
+    .product-stats {
+        gap: 0.75rem;
+    }
+
+    .stat {
+        padding: 1rem;
+        border-radius: 18px;
+    }
+
+    .stat-icon-wrap {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+    }
+
+    .stat-label {
+        font-size: 0.76rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    .licenses-section {
+        padding: 0.35rem 0 1.1rem;
+    }
+
+    .licenses-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .license-buttons {
+        max-width: none;
+        gap: 0.75rem;
+    }
+
+    .license-btn {
+        min-height: auto;
+        padding: 1rem;
+        gap: 0.55rem;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .license-head {
+        align-items: flex-start;
+        text-align: left;
+        gap: 0.25rem;
+    }
+
+    .license-name {
+        font-size: 1rem;
+    }
+
+    .license-price {
+        font-size: 1.08rem;
+    }
+
+    .license-desc {
+        font-size: 0.85rem;
+        text-align: left;
+    }
+
+    .license-contract-trigger {
+        align-self: flex-start;
+        font-size: 0.82rem;
+    }
+
+    .license-btn i {
+        left: auto;
+        right: 1rem;
+        bottom: 1rem;
+        transform: none;
+    }
+
+    .license-btn.active i {
+        width: auto;
+        margin-top: 0;
+        transform: scale(1.05);
+    }
+
+    .info-item {
+        justify-content: flex-start;
+        width: 100%;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .product-detail {
+        padding: 0.8rem 0 1.2rem;
+    }
+
+    .product-detail::before {
+        height: 280px;
+    }
+
+    .product-left {
+        gap: 1rem;
+    }
+
+    .product-image-and-player,
+    .product-image-wrapper {
+        width: min(100%, 240px);
+    }
+
+    .product-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .licenses-section h3 {
+        font-size: 1.08rem;
+    }
+
+    .license-modal-content,
+    .product-contract-modal-content {
+        width: calc(100% - 16px);
+        max-width: none;
+        margin: 8px auto;
+    }
+
+    #license-modal .modal-header {
+        padding: 0.95rem 0.95rem 0.8rem;
+    }
+
+    .license-modal-hero {
+        min-width: 0;
+    }
+
+    .license-modal-body {
+        padding: 0.95rem;
+    }
+
+    .license-choice-card,
+    .license-conditions-panel {
+        border-radius: 18px;
+        padding: 0.95rem;
+    }
+}

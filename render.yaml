@@ -3,11 +3,14 @@ services:
     name: studio-belec
     runtime: node
     plan: starter
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
-        value: 20
+        value: 20.19.0
+      - key: NODE_ENV
+        value: production
       - key: STORAGE_DIR
         value: /var/data/studio-belec
       - key: CONTACT_OWNER_EMAIL

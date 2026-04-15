@@ -519,22 +519,162 @@ body[data-theme="midnight"] .order-item-row {
         grid-template-columns: 1fr;
     }
 
-    .beat-admin-cover {
-        width: 100%;
-        height: 220px;
-    }
-
-    .section-title-row,
-    .media-actions,
+    .beat-admin-item,
     .order-card-top,
     .order-item-head,
-    .order-item-meta {
+    .order-item-meta,
+    .media-actions,
+    .orders-page-actions,
+    .orders-actions-row,
+    .section-title-row {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .orders-actions-row,
     .order-card-actions {
         justify-items: stretch;
+    }
+
+    .order-card-actions button,
+    .orders-actions-row button,
+    .branding-actions > *,
+    .media-actions > *,
+    .admin-submit-btn,
+    .admin-open-site {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .media-actions {
+        gap: 0.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding-bottom: 2rem;
+    }
+
+    .admin-hero {
+        padding: 1.5rem 0 0.8rem;
+    }
+
+    .admin-hero p {
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    .admin-card {
+        padding: 1rem;
+        border-radius: 16px;
+    }
+
+    .section-title-row h2,
+    .media-columns h3 {
+        font-size: 1.02rem;
+    }
+
+    .admin-message,
+    .empty-state {
+        padding: 0.9rem;
+    }
+
+    .beat-admin-cover {
+        width: 84px;
+        height: 84px;
+    }
+
+    .beat-admin-meta span {
+        display: block;
+        margin-right: 0;
+        margin-top: 0.15rem;
+    }
+
+    .order-meta-grid {
+        gap: 0.35rem;
+        font-size: 0.9rem;
+    }
+
+    .order-item-row {
+        padding: 0.8rem;
+    }
+
+    .order-contract pre {
+        font-size: 0.9rem;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-form input[type="text"],
+    .admin-form input[type="number"],
+    .admin-form input[type="file"] {
+        padding: 0.8rem 0.9rem;
+    }
+
+    .admin-tips-list {
+        padding-left: 1rem;
+    }
+
+    .branding-preview {
+        justify-items: stretch;
+    }
+}
+
+@media (max-width: 520px) {
+    .admin-hero h1 {
+        font-size: 1.65rem;
+        line-height: 1.1;
+    }
+
+    .status-pill {
+        align-self: flex-start;
+    }
+
+    .admin-card {
+        padding: 0.9rem;
+    }
+
+    .beat-admin-item,
+    .media-item,
+    .order-card {
+        padding: 0.85rem;
+        border-radius: 14px;
+    }
+
+    .beat-admin-cover {
+        width: 100%;
+        max-width: 180px;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .beat-admin-item {
+        justify-items: start;
+    }
+
+    .refresh-btn,
+    .admin-danger-btn,
+    .admin-secondary-btn,
+    .admin-open-site,
+    .admin-submit-btn {
+        padding: 0.72rem 0.9rem;
+        font-size: 0.92rem;
+    }
+
+    .order-card-actions button {
+        min-width: 0;
+    }
+
+    .order-item-head strong,
+    .beat-admin-title {
+        font-size: 0.98rem;
+    }
+
+    .media-meta,
+    .media-hint,
+    .order-note,
+    .order-item-meta,
+    .order-meta-grid,
+    .beat-admin-meta {
+        font-size: 0.88rem;
     }
 }

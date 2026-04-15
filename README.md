@@ -53,16 +53,21 @@ Si `CONTACT_SMTP_USER` et `CONTACT_SMTP_PASS` sont configures, le serveur envoie
 
 ### Hébergement full-stack conseillé
 
-GitHub Pages ne suffit pas pour ce projet complet, car il ne peut pas exécuter `server.js` ni conserver les uploads `covers/`, `sons/`, `branding/`, `data.json`, `orders.json` et `carts.json`.
+GitHub Pages ne suffit pas pour ce projet complet, car il ne peut pas exécuter `server.js` ni stocker les commandes, paniers, logos, covers et fichiers audio côté serveur.
 
-Pour mettre en ligne la version complète, utilisez un hébergeur Node avec stockage persistant, par exemple Render.
+Pour la mise en ligne complète, la configuration la plus directe pour ce dépôt reste Render avec disque persistant pour les données et médias.
 
 Un guide pas à pas GitHub + Render est disponible dans [DEPLOY_RENDER_GITHUB.md](DEPLOY_RENDER_GITHUB.md).
+
+Une configuration alternative Railway + MongoDB Atlas reste documentée dans [DEPLOY_RAILWAY_MONGODB.md](DEPLOY_RAILWAY_MONGODB.md).
 
 Variables d'environnement recommandées:
 
 ```text
 PORT=3000
+STORAGE_BACKEND=mongodb
+MONGODB_URI=mongodb+srv://...
+MONGODB_DB_NAME=studio-belec
 STORAGE_DIR=/var/data/studio-belec
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=mot-de-passe-fort
@@ -71,9 +76,8 @@ CONTACT_SMTP_USER=...
 CONTACT_SMTP_PASS=...
 ```
 
-Le serveur supporte maintenant `STORAGE_DIR` pour séparer le code de production et les fichiers persistants.
-
-### EmailJS
+STORAGE_BACKEND=filesystem
+STORAGE_DIR=/var/data/studio-belec
 
 EmailJS reste optionnel pour les notifications checkout.
 
@@ -81,7 +85,7 @@ Le formulaire contact public passe maintenant par le serveur via `/api/contact`,
 
 Remplissez [emailjs-config.js](emailjs-config.js) avec vos vraies valeurs:
 
-```javascript
+Sur Render, utilisez `STORAGE_BACKEND=filesystem` avec un disque persistant monte sur `/var/data/studio-belec`. L'option MongoDB reste possible si vous deployez plutot sur Railway.
 window.EMAILJS_CONFIG = {
   publicKey: 'VOTRE_PUBLIC_KEY',
   serviceId: 'service_xxxxx',
@@ -119,8 +123,8 @@ Le script demandera le mot de passe d'application Gmail puis démarrera le serve
 ### Fonctions de l'admin
 
 - Ajouter un beat avec cover + fichier audio
-- Sauvegarder automatiquement les fichiers dans `covers/` et `sons/`
-- Mettre à jour automatiquement `data.json`
+- Sauvegarder automatiquement les medias dans MongoDB Atlas via GridFS en production Railway
+- Mettre à jour automatiquement les beats, paniers, commandes et branding
 - Supprimer un beat
 - Supprimer les fichiers médias déjà téléversés quand ils ne sont plus utilisés
 - Ouvrir une page admin dediee aux commandes via un bouton avec chargement
