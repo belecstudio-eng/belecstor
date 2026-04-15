@@ -1137,11 +1137,89 @@ if (btnCommander) {
 // ===== CONTACT =====
 const emailJsConfig = window.EMAILJS_CONFIG || {};
 const CONTACT_OWNER_EMAIL = emailJsConfig.ownerEmail || 'belecstudio@gmail.com';
+let contactEmailJsReady = false;
+
+function canUseEmailJsContact() {
+    return Boolean(
+        window.emailjs
+        && emailJsConfig.publicKey
+        && emailJsConfig.serviceId
+        && emailJsConfig.contactTemplateId
+    );
+}
+
+function ensureEmailJsContactReady() {
+    if (!canUseEmailJsContact()) {
+        return false;
+    }
+
+    if (!contactEmailJsReady) {
+        window.emailjs.init({ publicKey: emailJsConfig.publicKey });
+        contactEmailJsReady = true;
+    }
+
+    return true;
+}
+
+async function sendContactEmailWithEmailJs(name, email, message) {
+    if (!ensureEmailJsContactReady()) {
+        throw new Error('EmailJS non configure');
+    }
+
+    return window.emailjs.send(emailJsConfig.serviceId, emailJsConfig.contactTemplateId, {
+        owner_email: CONTACT_OWNER_EMAIL,
+        to_email: CONTACT_OWNER_EMAIL,
+        reply_to: email,
+        from_email: email,
+        from_name: name,
+        customer_name: name,
+        customer_email: email,
+        contact_name: name,
+        subject: `Nouveau message contact - ${name}`,
+        title: `Nouveau message contact - ${name}`,
+        message,
+        message_html: String(message || '').replace(/\n/g, '<br>')
+    });
+}
+
+function openContactGmailCompose(name, email, message) {
+    const subject = `Nouveau message contact - ${name}`;
+    const body = [
+        `Nom: ${name}`,
+        `Email: ${email}`,
+        '',
+        'Message:',
+        message
+    ].join('\n');
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${encodeURIComponent(CONTACT_OWNER_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(gmailUrl, '_blank', 'noopener');
+}
 
 const contactForm = document.querySelector('#contactForm');
 if (contactForm) {
+    let isContactSubmitting = false;
+
+    contactForm.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' || isContactSubmitting) {
+            return;
+        }
+
+        const isTextarea = event.target instanceof HTMLTextAreaElement;
+        if (isTextarea && event.shiftKey) {
+            return;
+        }
+
+        event.preventDefault();
+        contactForm.requestSubmit();
+    });
+
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (isContactSubmitting) {
+            return;
+        }
         
         const name = document.getElementById('contactName').value.trim();
         const email = document.getElementById('contactEmail').value.trim();
@@ -1158,23 +1236,32 @@ if (contactForm) {
             submitButton.textContent = 'Envoi...';
         }
 
+        isContactSubmitting = true;
+
         try {
             await sendContactEmail(name, email, message);
-            afficherMessage(`Message envoye avec succes vers ${CONTACT_OWNER_EMAIL}.`, 'success');
+            afficherMessage('Votre message a bien ete envoye. Merci pour votre prise de contact. Nous vous repondrons dans les plus brefs delais.', 'success');
             contactForm.reset();
         } catch (error) {
             console.warn('Erreur envoi contact:', error);
-            const subject = `Nouveau message contact - ${name}`;
-            const body = [
-                `Nom: ${name}`,
-                `Email: ${email}`,
-                '',
-                'Message:',
-                message
-            ].join('\n');
-            window.location.href = `mailto:${CONTACT_OWNER_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            afficherMessage('Le serveur email n est pas configure. Le message a ete prepare pour envoi vers Gmail.', 'info');
+
+            try {
+                await sendContactEmailWithEmailJs(name, email, message);
+                afficherMessage('Votre message a bien ete envoye. Merci pour votre prise de contact. Nous vous repondrons dans les plus brefs delais.', 'success');
+                contactForm.reset();
+            } catch (emailJsError) {
+                console.warn('Erreur EmailJS contact:', emailJsError);
+                openContactGmailCompose(name, email, message);
+
+                if (Number(emailJsError?.status) === 412 && String(emailJsError?.text || '').includes('Invalid grant')) {
+                    afficherMessage('Gmail doit etre reconnecte dans EmailJS. Le message a ete prepare dans Gmail Web.', 'info');
+                } else {
+                    afficherMessage('Envoi automatique indisponible. Le message a ete prepare dans Gmail Web.', 'info');
+                }
+            }
         } finally {
+            isContactSubmitting = false;
+
             if (submitButton) {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Envoyer';
@@ -1211,13 +1298,13 @@ function afficherMessage(message, type = 'info') {
         document.body.appendChild(alert);
     }
 
-    alert.textContent = message;
-    alert.className = `message-alert message-alert-${type} is-visible`;
+    alert.innerHTML = `<span style="font-size:1.2em;vertical-align:middle;">${message}</span>`;
+    alert.className = `message-alert message-alert-${type} is-visible message-alert-styled`;
 
     clearTimeout(alert.hideTimeout);
     alert.hideTimeout = setTimeout(() => {
         alert.classList.remove('is-visible');
-    }, 2200);
+    }, 2600);
 }
 
 // ===== INITIALISATION =====

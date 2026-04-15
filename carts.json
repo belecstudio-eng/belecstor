@@ -1,3 +1,65 @@
 {
-  "carts": {}
+  "carts": {
+    "c05141bc-742c-43dc-af69-a7084ec01f39": {
+      "items": [],
+      "updatedAt": "2026-04-15T16:24:42.627Z"
+    },
+    "974ae937-5d3c-47b3-9778-fcc744783c2d": {
+      "items": [
+        {
+          "beatId": 7,
+          "beat": {
+            "id": 7,
+            "nom": "IDS",
+            "prix": 20,
+            "fichier": "1776010436271-studio-belec-15.mp3",
+            "cover": "1776010436268-capture-d-a-cran-2025-07-31-162947.png",
+            "bpm": 120,
+            "style": "trap",
+            "producteur": "STUDIO BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "exclusive",
+          "license": {
+            "name": "Exclusif",
+            "description": "Fichiers disponibles",
+            "priceSupplement": 220,
+            "totalPrice": 220,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 220
+        },
+        {
+          "beatId": 8,
+          "beat": {
+            "id": 8,
+            "nom": "RSKOQ",
+            "prix": 70,
+            "fichier": "1776010835883-studio-belec-31.mp3",
+            "cover": "1776010835880-ccl-dmvq.png",
+            "bpm": 100,
+            "style": "trop",
+            "producteur": "BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "exclusive",
+          "license": {
+            "name": "Exclusif",
+            "description": "Fichiers disponibles",
+            "priceSupplement": 220,
+            "totalPrice": 220,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 220
+        }
+      ],
+      "updatedAt": "2026-04-15T16:25:27.296Z"
+    },
+    "47fc5169-22f1-446e-bc29-8740078a49c0": {
+      "items": [],
+      "updatedAt": "2026-04-15T21:06:18.843Z"
+    }
+  }
 }

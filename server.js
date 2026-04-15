@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
@@ -1736,6 +1738,13 @@ app.post('/api/contact', async (req, res) => {
     if (error.code === 'CONTACT_EMAIL_NOT_CONFIGURED') {
       res.status(503).json({
         error: 'Le serveur email n est pas configure. Ajoutez CONTACT_SMTP_USER et CONTACT_SMTP_PASS.'
+      });
+      return;
+    }
+
+    if (error.code === 'EAUTH' || error.responseCode === 535) {
+      res.status(503).json({
+        error: 'Gmail refuse l authentification. Verifiez CONTACT_SMTP_USER et le mot de passe d application Gmail.'
       });
       return;
     }

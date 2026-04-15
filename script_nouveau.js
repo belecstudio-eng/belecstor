@@ -440,7 +440,7 @@ function sendContactEmail(name, email, message) {
             return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, confirmParams);
         })
         .then(() => {
-            afficherMessage('✅ Message envoyé avec succès! Une copie vous a été envoyée par email.');
+            afficherMessage('Votre message a bien ete envoye. Merci pour votre prise de contact. Nous vous repondrons dans les plus brefs delais.');
             const form = document.querySelector('.contact-form');
             if (form) form.reset();
         })
