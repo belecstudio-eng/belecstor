@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Page Produit - STUDIO BELEC</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=20260414f">
+    <link rel="stylesheet" href="product.css?v=20260413a">
+</head>
+<body data-theme="midnight">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo-link">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </a>
+            
+            <div class="logo">
+                <i class="fas fa-music"></i> STUDIO BELEC
+            </div>
+            
+            <div class="header-icons">
+                <button class="header-theme-btn" data-theme-toggle type="button" aria-label="Changer le theme">
+                    <i class="fas fa-moon" data-theme-toggle-icon></i>
+                    <span class="header-theme-btn-text" data-theme-toggle-text>Mode nuit</span>
+                    <span class="header-theme-btn-state" data-theme-toggle-state>Clair</span>
+                </button>
+                <button class="icon-btn cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="panier-count">0</span>
+                </button>
+            </div>
+        </div>
+        
+    </header>
+
+    <!-- PRODUIT DÉTAILLÉ -->
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-layout">
+                <!-- Haut produit : image, player et infos -->
+                <div class="product-left">
+                    <div class="product-image-and-player">
+                        <div class="product-image-wrapper">
+                            <img id="productImage" src="" alt="Beat Cover" class="product-image">
+                            <button class="product-image-play" id="productImagePlay" type="button" aria-label="Lire le beat">
+                                <span class="product-image-play-icon" aria-hidden="true"><i class="fas fa-play"></i></span>
+                            </button>
+                        </div>
+                        
+                        <!-- Lecteur audio -->
+                        <div class="audio-player">
+                            <audio id="audioPlayer">
+                                <source src="" type="audio/mpeg">
+                                Votre navigateur ne supporte pas l'élément audio.
+                            </audio>
+                        </div>
+                    </div>
+
+                    <div class="product-overview">
+                        <div class="producer-info">
+                            <p class="producer-name">STUDIO BELEC</p>
+                        </div>
+
+                        <h1 class="product-title" id="productTitle">Beat Title</h1>
+
+                        <div class="price-section">
+                            <span class="price" id="productPrice">49,99€</span>
+                            <span class="tax-info">taxes incluses</span>
+                        </div>
+
+                        <div class="product-stats">
+                            <div class="stat">
+                                <div class="stat-icon-wrap"><i class="fas fa-compact-disc"></i></div>
+                                <div>
+                                    <span class="stat-label">BPM</span>
+                                    <span class="stat-value" id="productBpm">140</span>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-icon-wrap"><i class="fas fa-tag"></i></div>
+                                <div>
+                                    <span class="stat-label">Genre</span>
+                                    <span class="stat-value" id="productStyle">Trap</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sélection licences -->
+                <div class="licenses-section">
+                    <h3>Choisir une licence</h3>
+                    
+                    <div class="license-buttons" id="productLicenseButtons"></div>
+                </div>
+
+                <!-- Infos supplémentaires -->
+                <div class="product-info">
+                    <div class="info-item">
+                        <i class="fas fa-check"></i>
+                        <span>Support email 24/7</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-check"></i>
+                        <span>Qualité haute définition</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL PANIER -->
+    <div id="panier-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>PANIER</h2>
+                <button class="modal-close" id="closeCart">&times;</button>
+            </div>
+            <div id="panier-items"></div>
+            <div class="modal-footer">
+                <div class="panier-total">
+                    <strong>Total: <span id="total">0</span>€</strong>
+                </div>
+                <div class="panier-actions">
+                    <button class="btn-cart-secondary" id="continueShoppingBtn" type="button">Continuer vos achats</button>
+                    <button class="btn-commander" id="btn-commander">Verifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="verify-ready-modal" class="modal">
+        <div class="modal-content verify-ready-modal-content">
+            <div class="modal-header">
+                <h2>Commande prête</h2>
+                <button class="modal-close" id="closeVerifyReadyModal">&times;</button>
+            </div>
+            <div class="verify-ready-body">
+                <p class="verify-ready-title">Votre commande est prête à être achetée.</p>
+                <p class="verify-ready-copy">Vous pouvez lancer l'achat maintenant et finaliser le paiement à l'étape suivante.</p>
+                <p class="verify-ready-total">Montant du panier : <strong id="verifyReadyTotal">0.00€</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-commander" id="verifyReadyCheckoutBtn" type="button">Acheter maintenant</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-contract-modal" class="modal">
+        <div class="modal-content product-contract-modal-content">
+            <div class="modal-header">
+                <h2 id="productContractTitle">Condition de contrat</h2>
+                <button class="modal-close" id="closeProductContractModal">&times;</button>
+            </div>
+            <div class="product-contract-body">
+                <p id="productContractContent"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="license-modal" class="modal">
+        <div class="modal-content license-modal-content">
+            <div class="modal-header">
+                <div class="license-modal-hero">
+                    <div class="license-modal-cover-frame">
+                        <img id="licenseModalBeatCover" class="license-modal-cover" src="" alt="Pochette du beat">
+                    </div>
+                    <div>
+                    <p class="license-modal-kicker">Tarification et licences</p>
+                    <h2 id="licenseModalBeatName">Beat</h2>
+                    <p class="license-modal-meta" id="licenseModalBeatMeta">0 BPM</p>
+                    </div>
+                </div>
+                <button class="modal-close" id="closeLicenseModal">&times;</button>
+            </div>
+            <div class="license-modal-body">
+                <div class="license-options-grid" id="licenseOptionsGrid"></div>
+                <div class="license-conditions-panel is-collapsed">
+                    <div class="license-conditions-header">
+                        <span>Conditions de licence</span>
+                        <div class="license-conditions-heading-row">
+                            <strong id="licenseConditionsTitle"></strong>
+                            <button class="license-conditions-close" id="licenseConditionsClose" type="button" aria-label="Refermer les conditions">&times;</button>
+                        </div>
+                    </div>
+                    <p id="licenseConditionsContent"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHECKOUT MULTISTEPS -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content modal-checkout">
+            <div class="modal-header">
+                <h2 id="checkoutTitle">Finaliser l'achat</h2>
+                <button class="modal-close" id="closeCheckout">&times;</button>
+            </div>
+
+            <!-- BARRE DE PROGRESSION -->
+            <div class="progress-bar">
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Infos</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Paiement</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Résumé</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Instructions</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 1 : INFOS CLIENT -->
+            <div class="checkout-step active" id="step-1">
+                <div class="step-content">
+                    <h3>Informations Client</h3>
+                    <form id="form-infos">
+                        <div class="form-group">
+                            <label for="fullName">Nom complet <span class="required">*</span></label>
+                            <input type="text" id="fullName" placeholder="Jean Dupont" required>
+                            <span class="error-message" id="error-fullName"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientEmail">Email <span class="required">*</span></label>
+                            <input type="email" id="clientEmail" placeholder="email@example.com" required>
+                            <span class="error-message" id="error-email"></span>
+                        </div>
+                    </form>
+                    <div class="checkout-cart-preview" id="checkoutCartPreview" hidden>
+                        <h4>Résumé avant vérification</h4>
+                        <div class="checkout-preview-items"></div>
+                    </div>
+                    <div class="step-footer">
+                        <button class="btn-step-next" data-next="2" type="button">Suivant</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 2 : CHOIX PAIEMENT -->
+            <div class="checkout-step" id="step-2">
+                <div class="step-content">
+                    <div class="checkout-step-intro checkout-step-intro-payment">
+                        <p class="checkout-step-kicker">Paiement</p>
+                        <h3>Choisissez votre méthode de paiement</h3>
+                        <p class="checkout-step-copy">Choisissez votre méthode de paiement.</p>
+                    </div>
+                    <div class="payment-methods">
+                        <div class="payment-option" data-method="wave">
+                            <div class="payment-logo">
+                                <i class="fas fa-mobile-alt"></i>
+                                <div>Wave</div>
+                            </div>
+                            <p>Disponible en Côte d'Ivoire</p>
+                        </div>
+                        <div class="payment-option" data-method="taptapsend">
+                            <div class="payment-logo">
+                                <i class="fas fa-globe"></i>
+                                <div>TapTapSend</div>
+                            </div>
+                            <p>Disponible en Europe</p>
+                        </div>
+                    </div>
+                    <div class="step-footer">
+                        <button class="btn-step-back" data-prev="1" type="button">Retour</button>
+                        <button class="btn-step-next" data-next="3" disabled id="btnPaymentNext" type="button">Suivant</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 3 : INSTRUCTIONS & CONFIRMATION -->
+            <div class="checkout-step" id="step-3">
+                <div class="step-content">
+                    <h3>Résumé de votre commande</h3>
+                    
+                    <div class="order-summary-checkout">
+                        <h4>Détails de commande</h4>
+                        <div class="summary-item">
+                            <span id="summaryCheckoutBeat">Beat</span>
+                            <span id="summaryCheckoutPrice">25€</span>
+                        </div>
+                        <div class="summary-item">
+                            <span id="summaryCheckoutLicense">Licence</span>
+                            <span id="summaryCheckoutLicensePrice">0€</span>
+                        </div>
+                        <div class="summary-item">
+                            <span id="summaryCheckoutPaymentMethod">Paiement</span>
+                            <span id="summaryCheckoutMethodName">Wave</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Montant total</span>
+                            <span id="summaryCheckoutTotal">25€</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-instructions">
+                        <p class="instruction-title">⚠️ INFOS IMPORTANTES :</p>
+                        <ul class="instruction-list instruction-list-short">
+                            <li>Vérifiez votre email: <strong id="summaryEmail">client@email.com</strong></li>
+                            <li>Méthode de paiement sélectionnée: <strong id="summaryMethod">Wave</strong></li>
+                            <li>Cliquez "Suivant" pour voir les instructions de paiement</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-footer">
+                        <button class="btn-step-back" data-prev="2" type="button">Retour</button>
+                        <button class="btn-step-next" data-next="4" type="button">Suivant</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 4 : INSTRUCTIONS OBLIGATOIRES -->
+            <div class="checkout-step" id="step-4">
+                <div class="step-content">
+                    <h3>Instructions de paiement</h3>
+                    <p class="checkout-step-copy">Avant de finaliser, suivez les instructions ci-dessous pour effectuer le paiement correctement et garder votre preuve.</p>
+                    
+                    <div class="mandatory-instructions">
+                        <div class="instruction-section">
+                            <h4>Comment proceder au paiement</h4>
+                            <ol class="numbered-list">
+                                <li><strong>Entrer dans <span id="paymentInstructionAppNameProduct">Wave</span></strong><br>Ouvrez l'application choisie pour payer. Si vous ne l'avez pas encore, telechargez-la puis connectez-vous.</li>
+                                <li><strong>Choisir le pays</strong><br>Selectionnez la Cote d'Ivoire avant de continuer le paiement.</li>
+                                <li><strong>Entrer le montant exact</strong><br>Utilisez exactement <span id="paymentAmountDisplay" class="highlight">25€</span> pour eviter tout blocage.</li>
+                                <li><strong>Suivre les infos de depot</strong><br>Vous recevrez ensuite le numero sur lequel effectuer le depot pour finaliser la transaction.</li>
+                                <li><strong>Garder la preuve</strong><br>Faites une capture d'ecran pour conserver la preuve du paiement.</li>
+                            </ol>
+                        </div>
+
+                        <div class="instruction-section important-box">
+                            <h4>Apres le paiement</h4>
+                            <ul class="instruction-list">
+                                <li><strong>Prenez une capture</strong> pour garder la preuve</li>
+                                <li>Vous recevrez ensuite les indications utiles pour terminer le depot</li>
+                                <li>Votre commande sera verifiee avant l'envoi du beat</li>
+                                <li>En cas de souci, contactez <strong id="ownerEmailDisplay">skurtyproduction@gmail.com</strong></li>
+                            </ul>
+                        </div>
+
+                        <div class="instruction-section warning-box">
+                            <p class="warning-title">Attention</p>
+                            <ul class="instruction-list">
+                                <li>Verifiez le <strong>montant</strong>, il doit etre exact</li>
+                                <li>Choisissez bien la <strong>Cote d'Ivoire</strong> dans l'application</li>
+                                <li>Gardez une <strong>capture</strong> jusqu'a validation complete</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="confirmation-message">
+                        <p>Votre commande sera traitee apres verification du paiement et confirmation du depot.</p>
+                    </div>
+
+                    <div class="step-footer">
+                        <button class="btn-step-back" data-prev="3" type="button">Retour</button>
+                        <button class="btn-pay" id="btnContinuePay">Continuer vers le paiement</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 STUDIO BELEC. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="theme.js?v=20260412a"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="emailjs-config.js?v=20260413a"></script>
+    <script src="branding.js?v=20260412a"></script>
+    <script src="cart.js?v=20260412a"></script>
+    <script src="licenses.js?v=20260412a"></script>
+    <script src="global-audio-player.js?v=20260412a"></script>
+    <script src="script.js?v=20260414a"></script>
+    <script src="product.js?v=20260412a"></script>
+    <script src="checkout.js?v=20260414b"></script>
+</body>
+</html>

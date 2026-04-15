@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Beats - STUDIO BELEC</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=20260412b">
+    <link rel="stylesheet" href="admin.css?v=20260412b">
+</head>
+<body data-theme="midnight">
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo-link admin-back-link">
+                <button class="menu-toggle admin-back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </a>
+            <div class="logo">
+                <i class="fas fa-sliders"></i> Admin Beats
+            </div>
+            <div class="header-icons">
+                <button class="header-theme-btn" data-theme-toggle type="button" aria-label="Changer le theme">
+                    <i class="fas fa-moon" data-theme-toggle-icon></i>
+                    <span class="header-theme-btn-text" data-theme-toggle-text>Mode nuit</span>
+                    <span class="header-theme-btn-state" data-theme-toggle-state>Clair</span>
+                </button>
+                <a href="index.html" class="admin-open-site">Ouvrir le site</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-page">
+        <section class="admin-hero">
+            <div class="container">
+                <h1>Ajouter un article</h1>
+                <p>Choisissez une cover, un son, remplissez les infos, puis televersez. Vous pourrez aussi supprimer un beat ou nettoyer des fichiers non utilises.</p>
+            </div>
+        </section>
+
+        <section class="admin-section">
+            <div class="container admin-layout">
+                <div class="admin-card upload-card">
+                    <div class="section-title-row">
+                        <h2>Nouveau beat</h2>
+                        <span class="status-pill">Upload local</span>
+                    </div>
+
+                    <form id="uploadForm" class="admin-form">
+                        <div class="admin-form-grid">
+                            <div class="form-group">
+                                <label for="beatName">Nom du beat</label>
+                                <input type="text" id="beatName" name="nom" placeholder="Ex: Midnight Trap" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="beatPrice">Prix</label>
+                                <input type="number" id="beatPrice" name="prix" min="0" step="0.01" placeholder="14.99" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="beatBpm">BPM</label>
+                                <input type="number" id="beatBpm" name="bpm" min="1" placeholder="140" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="beatStyle">Style</label>
+                                <input type="text" id="beatStyle" name="style" placeholder="Trap" required>
+                            </div>
+                            <div class="form-group admin-form-wide">
+                                <label for="beatProducer">Producteur</label>
+                                <input type="text" id="beatProducer" name="producteur" placeholder="STUDIO BELEC">
+                            </div>
+                            <div class="form-group">
+                                <label for="beatCover">Image cover</label>
+                                <input type="file" id="beatCover" name="cover" accept=".jpg,.jpeg,.png,.webp" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="beatAudio">Fichier son</label>
+                                <input type="file" id="beatAudio" name="audio" accept=".mp3,.wav" required>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-actions">
+                            <button type="submit" class="btn-submit admin-submit-btn">
+                                <i class="fas fa-upload"></i> Televerser le beat
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="uploadMessage" class="admin-message" hidden></div>
+                </div>
+
+                <div class="admin-card tips-card">
+                    <div class="section-title-row">
+                        <h2>Utilisation</h2>
+                        <span class="status-pill muted">Simple</span>
+                    </div>
+                    <ul class="admin-tips-list">
+                        <li>Ajoutez une image de cover et un son dans le formulaire.</li>
+                        <li>Le serveur enregistre les fichiers dans covers et sons automatiquement.</li>
+                        <li>Le beat est ajoute dans data.json sans edition manuelle.</li>
+                        <li>Supprimer un beat retire aussi ses fichiers s ils ne sont plus utilises.</li>
+                        <li>Les fichiers orphelins peuvent etre supprimes dans la bibliotheque media.</li>
+                    </ul>
+
+                    <div class="admin-branding-block">
+                        <div class="section-title-row admin-branding-head">
+                            <h2>Logo du site</h2>
+                            <span class="status-pill muted">Header</span>
+                        </div>
+
+                        <form id="brandingForm" class="admin-form">
+                            <div class="form-group">
+                                <label for="siteLogo">Choisir un logo</label>
+                                <input type="file" id="siteLogo" name="logo" accept=".jpg,.jpeg,.png,.webp" required>
+                            </div>
+
+                            <div class="admin-form-actions branding-actions">
+                                <button type="submit" class="btn-submit admin-submit-btn">
+                                    <i class="fas fa-image"></i> Envoyer le logo
+                                </button>
+                                <button type="button" class="admin-danger-btn" id="deleteLogoBtn">Supprimer le logo</button>
+                            </div>
+                        </form>
+
+                        <div id="brandingPreview" class="branding-preview empty-state">Aucun logo pour le moment.</div>
+                    </div>
+
+                    <div class="admin-branding-block admin-orders-shortcut">
+                        <div class="section-title-row admin-branding-head">
+                            <h2>Commandes clients</h2>
+                            <span class="status-pill muted">Page dediee</span>
+                        </div>
+                        <p class="admin-shortcut-text">Ouvrez la page commandes pour consulter, supprimer et gerer les achats clients sur un ecran separe.</p>
+                        <button type="button" class="btn-submit admin-submit-btn admin-loading-btn" id="openOrdersPageBtn" data-loading-label="Chargement des commandes...">
+                            <i class="fas fa-box-open"></i> Ouvrir les commandes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-section admin-section-soft">
+            <div class="container admin-grid-two">
+                <div class="admin-card">
+                    <div class="section-title-row">
+                        <h2>Beats televerses</h2>
+                        <button class="refresh-btn" id="refreshBeatsBtn" type="button">
+                            <i class="fas fa-rotate-right"></i> Actualiser
+                        </button>
+                    </div>
+                    <div id="beatsList" class="admin-list empty-state">Chargement...</div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="section-title-row">
+                        <h2>Bibliotheque media</h2>
+                        <button class="refresh-btn" id="refreshMediaBtn" type="button">
+                            <i class="fas fa-rotate-right"></i> Actualiser
+                        </button>
+                    </div>
+
+                    <div class="media-columns">
+                        <div>
+                            <h3>Covers</h3>
+                            <div id="coversList" class="media-list empty-state">Chargement...</div>
+                        </div>
+                        <div>
+                            <h3>Audio</h3>
+                            <div id="audiosList" class="media-list empty-state">Chargement...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="theme.js"></script>
+    <script src="branding.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "mes-prods-local-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serveur local pour gerer les beats, covers et fichiers audio.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^2.0.2",
+    "nodemailer": "^8.0.5"
+  }
+}

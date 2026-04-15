@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>STUDIO BELEC - Vente de Beats Professionnels</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=20260414f">
+</head>
+<body data-theme="midnight">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="logo">
+                <i class="fas fa-music"></i> STUDIO BELEC
+            </div>
+            
+            <div class="header-icons">
+                <button class="icon-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="header-theme-btn" data-theme-toggle type="button" aria-label="Changer le theme">
+                    <i class="fas fa-moon" data-theme-toggle-icon></i>
+                    <span class="header-theme-btn-text" data-theme-toggle-text>Mode nuit</span>
+                    <span class="header-theme-btn-state" data-theme-toggle-state>Clair</span>
+                </button>
+                <button class="icon-btn cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="panier-count">0</span>
+                </button>
+            </div>
+        </div>
+        
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu" aria-label="Navigation principale">
+        <div class="nav-menu-header">
+            <p class="nav-menu-kicker">Navigation</p>
+            <h2 class="nav-menu-title">Explorer le site</h2>
+        </div>
+        <div class="nav-menu-links">
+            <a href="#accueil" class="nav-item">Accueil</a>
+            <a href="#beats" class="nav-item">Beats</a>
+            <a href="#contact" class="nav-item">Contact</a>
+            <a href="#about" class="nav-item">À Propos</a>
+        </div>
+    </nav>
+
+    <!-- Overlay pour fermer le menu -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <div class="catalog-intro">
+        <div id="accueil" aria-hidden="true"></div>
+        <div class="container">
+            <div class="section-head section-head-centered">
+                <div>
+                    <p class="section-kicker">Catalogue</p>
+                    <h2 class="section-title">Choisis un beat sans perdre de temps.</h2>
+                    <p class="section-copy">Utilise la recherche, la vue liste ou grille, puis affine par BPM, genre et tri pour arriver vite sur la bonne prod.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="search-bar active" id="searchBar">
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search search-input-icon"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un beat, un genre, un producteur ou un BPM..." class="search-input" aria-label="Rechercher un beat">
+                <button class="clear-search-btn" id="clearSearchBtn" type="button" aria-label="Effacer la recherche">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION PRODUITS -->
+    <section class="produits-section" id="beats">
+        <div class="container">
+            <!-- Contrôles -->
+            <div class="controls">
+                <div class="controls-side">
+                    <div class="view-toggle" id="viewToggle" aria-label="Changer la vue des beats">
+                        <button class="view-btn active" id="listViewBtn" data-view="list" aria-label="Vue liste">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="view-btn" id="gridViewBtn" data-view="grid" aria-label="Vue grille">
+                            <i class="fas fa-grip"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-panel-group" id="filterPanelGroup">
+                        <button class="filter-btn filter-master-btn" id="filterToggleBtn" type="button" aria-label="Ouvrir les filtres" aria-expanded="false">
+                            <i class="fas fa-sliders-h"></i>
+                            <span class="filter-master-copy">
+                                <span class="filter-master-title">Filtres</span>
+                                <span class="filter-master-summary" id="filterSummary">BPM, genre, tri</span>
+                            </span>
+                            <span class="filter-badge" id="filterBadge">3</span>
+                        </button>
+                        <div class="filter-panel" id="filterPanel" hidden>
+                            <div class="filter-panel-sheet-indicator"></div>
+                            <div class="filter-panel-head">
+                                <div>
+                                    <p class="filter-panel-kicker">Affinage</p>
+                                    <h3>Filtres de beats</h3>
+                                </div>
+                                <button class="filter-panel-close" id="filterPanelClose" type="button" aria-label="Fermer les filtres">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div class="filter-panel-grid">
+                                <section class="filter-field" aria-labelledby="filter-bpm-title">
+                                    <span id="filter-bpm-title">Tous les BPM</span>
+                                    <div class="filter-chip-group" id="bpmOptions">
+                                        <button class="filter-chip active" type="button" data-filter-group="bpm" data-filter-value="all">Tous</button>
+                                        <button class="filter-chip" type="button" data-filter-group="bpm" data-filter-value="slow">60-90</button>
+                                        <button class="filter-chip" type="button" data-filter-group="bpm" data-filter-value="medium">90-120</button>
+                                        <button class="filter-chip" type="button" data-filter-group="bpm" data-filter-value="fast">120+</button>
+                                    </div>
+                                </section>
+
+                                <section class="filter-field" aria-labelledby="filter-style-title">
+                                    <span id="filter-style-title">Tous les genres</span>
+                                    <div class="filter-chip-group" id="styleOptions">
+                                        <button class="filter-chip active" type="button" data-filter-group="style" data-filter-value="all">Tous</button>
+                                        <button class="filter-chip" type="button" data-filter-group="style" data-filter-value="trap">Trap</button>
+                                        <button class="filter-chip" type="button" data-filter-group="style" data-filter-value="lofi">Lofi</button>
+                                        <button class="filter-chip" type="button" data-filter-group="style" data-filter-value="drill">Drill</button>
+                                        <button class="filter-chip" type="button" data-filter-group="style" data-filter-value="rap">Rap</button>
+                                    </div>
+                                </section>
+
+                                <section class="filter-field" aria-labelledby="filter-sort-title">
+                                    <span id="filter-sort-title">Trier par</span>
+                                    <div class="filter-chip-group" id="sortOptions">
+                                        <button class="filter-chip active" type="button" data-filter-group="sort" data-filter-value="recent">Récent</button>
+                                        <button class="filter-chip" type="button" data-filter-group="sort" data-filter-value="price-low">Prix croissant</button>
+                                        <button class="filter-chip" type="button" data-filter-group="sort" data-filter-value="price-high">Prix décroissant</button>
+                                        <button class="filter-chip" type="button" data-filter-group="sort" data-filter-value="popular">Populaire</button>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div class="filter-panel-actions">
+                                <button class="filter-reset-btn" id="filterResetBtn" type="button">Réinitialiser</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grille des produits -->
+            <div class="beats-grid view-list" id="grille-produits">
+                <!-- Les beats seront ajoutés par JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION CONTACT -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-head section-head-centered">
+                <p class="section-kicker">Contact</p>
+                <h2 class="section-title">Travaillons sur le bon son, avec un brief clair.</h2>
+                <p class="section-copy">Questions, beat sur mesure, infos de livraison ou demande rapide: le contact est maintenant plus visible et mieux encadre.</p>
+            </div>
+
+            <div class="contact-layout">
+                <div class="contact-card contact-copy-card">
+                    <p class="contact-card-kicker">Direct studio</p>
+                    <h3>Explique ton besoin en quelques lignes.</h3>
+                    <p>Tu peux ecrire pour une prod precise, un ajustement, une exclusivite ou une demande de direction artistique.</p>
+                    <div class="contact-points">
+                        <div class="contact-point">
+                            <strong>Besoin rapide</strong>
+                            <span>Question sur une licence, un paiement ou une dispo.</span>
+                        </div>
+                        <div class="contact-point">
+                            <strong>Projet sur mesure</strong>
+                            <span>Brief de beat, ambiance, references et tempo souhaites.</span>
+                        </div>
+                        <div class="contact-point">
+                            <strong>Suivi propre</strong>
+                            <span>Une zone dediee pour que le message ne se perde pas dans la page.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form contact-card" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="contactName" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="contactEmail" placeholder="Votre email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="contactMessage" placeholder="Votre message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="section-head section-head-centered">
+                <p class="section-kicker">A propos</p>
+                <h2 class="section-title">Une page plus structuree pour mieux vendre le son.</h2>
+                <p class="section-copy">Le site garde ton catalogue au centre, mais avec plus de respiration, plus de reperes et une lecture plus premium.</p>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-card about-card-main">
+                    <p class="about-kicker">Direction</p>
+                    <h2>Une selection pensee pour ecrire, enregistrer et sortir vite.</h2>
+                    <p>
+                        Chaque beat est prepare avec une direction claire, des textures propres et une energie exploitable
+                        immediatement pour la maquette comme pour une sortie finale.
+                    </p>
+                </div>
+
+                <div class="about-card about-card-side">
+                    <p class="about-kicker">Structure</p>
+                    <h3>Des sections plus nettes</h3>
+                    <p>Hero, catalogue, contact et presentation sont mieux separes pour guider la lecture sans surcharge.</p>
+                </div>
+
+                <div class="about-card about-card-side">
+                    <p class="about-kicker">Presentation</p>
+                    <h3>Un rendu plus premium</h3>
+                    <p>Typo plus forte, cartes mieux posees et informations prioritaires plus faciles a scanner.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>STUDIO BELEC</h3>
+                    <p>Votre plateforme de vente de beats professionnels</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liens</h4>
+                    <ul>
+                        <li><a href="#beats">Beats</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#">Mentions légales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Suivez-moi</h4>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/studio_belec/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram Studio Belec"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@studiobelec?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok Studio Belec"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@studiobelec" target="_blank" rel="noopener noreferrer" aria-label="YouTube Studio Belec"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 STUDIO BELEC. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL PANIER -->
+    <div id="panier-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>PANIER</h2>
+                <button class="modal-close" id="closeCart">&times;</button>
+            </div>
+            <div id="panier-items"></div>
+            <div class="modal-footer">
+                <div class="panier-total">
+                    <strong>Total: <span id="total">0</span>€</strong>
+                </div>
+                <div class="panier-actions">
+                    <button class="btn-cart-secondary" id="continueShoppingBtn" type="button">Continuer vos achats</button>
+                    <button class="btn-commander" id="btn-commander">Verifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="verify-ready-modal" class="modal">
+        <div class="modal-content verify-ready-modal-content">
+            <div class="modal-header">
+                <h2>Pret a payer</h2>
+                <button class="modal-close" id="closeVerifyReadyModal">&times;</button>
+            </div>
+            <div class="verify-ready-body">
+                <p class="verify-ready-title">Montant a regler</p>
+                <p class="verify-ready-total"><strong id="verifyReadyTotal">0.00€</strong></p>
+                <button class="btn-commander" id="verifyReadyCheckoutBtn" type="button">Continuer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="license-modal" class="modal">
+        <div class="modal-content license-modal-content">
+            <div class="modal-header">
+                <div class="license-modal-hero">
+                    <div class="license-modal-cover-frame">
+                        <img id="licenseModalBeatCover" class="license-modal-cover" src="" alt="Pochette du beat">
+                    </div>
+                    <div>
+                    <p class="license-modal-kicker">Tarification et licences</p>
+                    <h2 id="licenseModalBeatName">Beat</h2>
+                    <p class="license-modal-meta" id="licenseModalBeatMeta">0 BPM</p>
+                    </div>
+                </div>
+                <button class="modal-close" id="closeLicenseModal">&times;</button>
+            </div>
+            <div class="license-modal-body">
+                <div class="license-options-grid" id="licenseOptionsGrid"></div>
+                <div class="license-conditions-panel is-collapsed">
+                    <div class="license-conditions-header">
+                        <span>Conditions de licence</span>
+                        <div class="license-conditions-heading-row">
+                            <strong id="licenseConditionsTitle"></strong>
+                            <button class="license-conditions-close" id="licenseConditionsClose" type="button" aria-label="Refermer les conditions">&times;</button>
+                        </div>
+                    </div>
+                    <p id="licenseConditionsContent"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHECKOUT MULTISTEPS -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content modal-checkout">
+            <div class="modal-header">
+                <h2 id="checkoutTitle">Finaliser l'achat</h2>
+                <button class="modal-close" id="closeCheckout">&times;</button>
+            </div>
+
+            <!-- BARRE DE PROGRESSION -->
+            <div class="progress-bar">
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Infos</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Paiement</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Résumé</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Instructions</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 1 : INFOS CLIENT -->
+            <div class="checkout-step active" id="step-1">
+                <div class="step-content">
+                    <h3>Informations Client</h3>
+                    <form id="form-infos">
+                        <div class="form-group">
+                            <label for="fullName">Nom complet <span class="required">*</span></label>
+                            <input type="text" id="fullName" placeholder="Jean Dupont" required>
+                            <span class="error-message" id="error-fullName"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientEmail">Email <span class="required">*</span></label>
+                            <input type="email" id="clientEmail" placeholder="email@example.com" required>
+                            <span class="error-message" id="error-email"></span>
+                        </div>
+                    </form>
+                    <div class="checkout-cart-preview" id="checkoutCartPreview" hidden>
+                        <h4>Résumé avant vérification</h4>
+                        <div class="checkout-preview-items"></div>
+                    </div>
+                    <div class="step-footer">
+                        <button class="btn-step-next" data-next="2" type="button">Suivant</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 2 : CHOIX PAIEMENT -->
+            <div class="checkout-step" id="step-2">
+                <div class="step-content">
+                    <div class="checkout-step-intro checkout-step-intro-payment">
+                        <p class="checkout-step-kicker">Paiement</p>
+                        <h3>Choisissez votre méthode de paiement</h3>
+                        <p class="checkout-step-copy">Choisissez votre méthode de paiement.</p>
+                    </div>
+                    <div class="payment-methods">
+                        <div class="payment-option" data-method="wave">
+                            <div class="payment-logo">
+                                <i class="fas fa-mobile-alt"></i>
+                                <div>Wave</div>
+                            </div>
+                            <p>Disponible en Côte d'Ivoire</p>
+                        </div>
+                        <div class="payment-option" data-method="taptapsend">
+                            <div class="payment-logo">
+                                <i class="fas fa-globe"></i>
+                                <div>TapTapSend</div>
+                            </div>
+                            <p>Disponible en Europe</p>
+                        </div>
+                    </div>
+                    <div class="step-footer">
+                        <button class="btn-step-back" data-prev="1" type="button">Retour</button>
+                        <button class="btn-step-next" data-next="3" disabled id="btnPaymentNext" type="button">Suivant</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 3 : INSTRUCTIONS & CONFIRMATION -->
+            <div class="checkout-step" id="step-3">
+                <div class="step-content">
+                    <div class="checkout-step-intro checkout-step-intro-summary">
+                        <p class="checkout-step-kicker">Verification</p>
+                        <h3>Resume de votre commande</h3>
+                        <p class="checkout-step-copy">Verifiez simplement le montant, la methode et l'email avant de continuer.</p>
+                    </div>
+
+                    <div class="checkout-summary-layout">
+                        <div class="order-summary-checkout order-summary-card">
+                            <h4>Details de commande</h4>
+                            <div class="summary-item">
+                                <span id="summaryCheckoutBeat">Beat</span>
+                                <span id="summaryCheckoutPrice">25€</span>
+                            </div>
+                            <div class="summary-item">
+                                <span id="summaryCheckoutLicense">Licence</span>
+                                <span id="summaryCheckoutLicensePrice">0€</span>
+                            </div>
+                            <div class="summary-item">
+                                <span id="summaryCheckoutPaymentMethod">Paiement</span>
+                                <span id="summaryCheckoutMethodName">Wave</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Montant total</span>
+                                <span id="summaryCheckoutTotal">25€</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-instructions payment-instructions-card payment-instructions-card-compact">
+                            <div class="instruction-card-head">
+                                <p class="instruction-card-kicker">Controle rapide</p>
+                                <h4>Infos a confirmer</h4>
+                            </div>
+                            <ul class="instruction-list instruction-list-short">
+                                <li><strong>Email de reception</strong><span id="summaryEmail">client@email.com</span></li>
+                                <li><strong>Methode selectionnee</strong><span id="summaryMethod">Wave</span></li>
+                                <li><strong>Etape suivante</strong><span>Voir les instructions puis lancer le paiement</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step-footer">
+                        <button class="btn-step-back" data-prev="2" type="button">Retour</button>
+                        <button class="btn-step-next" data-next="4" type="button">Suivant</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 4 : INSTRUCTIONS OBLIGATOIRES -->
+            <div class="checkout-step" id="step-4">
+                <div class="step-content">
+                    <div class="checkout-step-intro checkout-step-intro-payment">
+                        <p class="checkout-step-kicker">Derniere etape</p>
+                        <h3>Paiement</h3>
+                        <p class="checkout-step-copy">Avant de finaliser, suivez les instructions ci-dessous pour effectuer le paiement correctement et garder votre preuve.</p>
+                    </div>
+
+                    <div class="mandatory-instructions mandatory-instructions-layout">
+                        <div class="instruction-section instruction-card instruction-card-checklist">
+                            <div class="payment-checklist payment-checklist-inline payment-checklist-compact">
+                                <div class="payment-checklist-item">
+                                    <span class="payment-checklist-label">Application</span>
+                                    <strong id="appName">Wave Money</strong>
+                                </div>
+                                <div class="payment-checklist-item">
+                                    <span class="payment-checklist-label">Montant</span>
+                                    <strong id="paymentAmountDisplay">25€</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="instruction-section instruction-card instruction-card-process">
+                            <div class="instruction-card-head">
+                                <p class="instruction-card-kicker">Ordre</p>
+                                <h4>Comment proceder</h4>
+                            </div>
+                            <div class="payment-flow-list" aria-label="Etapes de paiement">
+                                <div class="payment-flow-item">
+                                    <span class="payment-flow-step">Etape 1</span>
+                                    <strong>Entrer dans <span id="paymentInstructionAppName">Wave</span></strong>
+                                    <span>Ouvrez l'application choisie pour payer. Si vous ne l'avez pas encore, telechargez-la puis connectez-vous.</span>
+                                </div>
+                                <div class="payment-flow-item">
+                                    <span class="payment-flow-step">Etape 2</span>
+                                    <strong>Choisir le pays et preparer le paiement</strong>
+                                    <span>Choisissez la Cote d'Ivoire, entrez le montant exact affiche dans le recap et preparez l'envoi depuis l'application.</span>
+                                </div>
+                                <div class="payment-flow-item">
+                                    <span class="payment-flow-step">Etape 3</span>
+                                    <strong>Garder la preuve et suivre le depot</strong>
+                                    <span>Faites une capture d'ecran pour garder la preuve. Vous recevrez ensuite le numero sur lequel effectuer le depot pour finaliser rapidement.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="confirmation-message confirmation-message-payment">
+                        <p>Votre commande sera traitee apres verification du paiement et confirmation du depot.</p>
+                    </div>
+
+                    <div class="step-footer">
+                        <button class="btn-step-back" data-prev="3" type="button">Retour</button>
+                        <button class="btn-pay" id="btnContinuePay">Continuer vers le paiement</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="emailjs-config.js?v=20260413a"></script>
+    <script src="branding.js"></script>
+    <script src="cart.js"></script>
+    <script src="licenses.js"></script>
+    <script src="global-audio-player.js"></script>
+    <script src="script.js?v=20260414a"></script>
+    <script src="checkout.js?v=20260414b"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+{
+  "carts": {
+    "7ba8c12f-c369-45ad-838c-d928c0c039dc": {
+      "items": [
+        {
+          "beatId": 6,
+          "beat": {
+            "id": 6,
+            "nom": "ryz'y",
+            "prix": 520,
+            "fichier": "1776001873487-studio-belec-31.mp3",
+            "cover": "1776001873473-capture-d-a-cran-2025-05-14-224105k.png",
+            "bpm": 152,
+            "style": "trop",
+            "producteur": "BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "exclusive",
+          "license": {
+            "name": "Exclusif",
+            "description": "Fichiers disponibles",
+            "priceSupplement": 220,
+            "totalPrice": 220,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 220
+        }
+      ],
+      "updatedAt": "2026-04-12T17:07:11.781Z"
+    },
+    "974ae937-5d3c-47b3-9778-fcc744783c2d": {
+      "items": [
+        {
+          "beatId": 7,
+          "beat": {
+            "id": 7,
+            "nom": "IDS",
+            "prix": 20,
+            "fichier": "1776010436271-studio-belec-15.mp3",
+            "cover": "1776010436268-capture-d-a-cran-2025-07-31-162947.png",
+            "bpm": 120,
+            "style": "trap",
+            "producteur": "STUDIO BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "exclusive",
+          "license": {
+            "name": "Exclusif",
+            "description": "Fichiers disponibles",
+            "priceSupplement": 220,
+            "totalPrice": 220,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 220
+        }
+      ],
+      "updatedAt": "2026-04-14T23:25:23.386Z"
+    },
+    "78b87512-2cc2-45af-a126-9a406d0fd1c3": {
+      "items": [],
+      "updatedAt": "2026-04-13T02:06:35.079Z"
+    },
+    "bc88f25d-aff7-4304-87b8-54ffb5b8dd04": {
+      "items": [
+        {
+          "beatId": 4,
+          "beat": {
+            "id": 4,
+            "nom": "RSKOQ",
+            "prix": 0,
+            "fichier": "test.mp3",
+            "cover": "",
+            "bpm": 100,
+            "style": "Trap",
+            "producteur": "STUDIO BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "exclusive",
+          "license": {
+            "name": "Exclusif",
+            "description": "",
+            "priceSupplement": 0,
+            "totalPrice": 220,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 220
+        }
+      ],
+      "updatedAt": "2026-04-13T09:46:51.759Z"
+    },
+    "753d0519-468d-4750-9955-cddb698208fa": {
+      "items": [
+        {
+          "beatId": 5,
+          "beat": {
+            "id": 5,
+            "nom": "TIAKOLA x LETO x RSKO",
+            "prix": 300,
+            "fichier": "1776001647079-studio-belec-33.mp3",
+            "cover": "1776001647072-capture-d-a-cran-2025-10-28-115804.pnglb.png",
+            "bpm": 150,
+            "style": "Melo",
+            "producteur": "STUDIO BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "exclusive",
+          "license": {
+            "name": "Exclusif",
+            "description": "Fichiers disponibles",
+            "priceSupplement": 220,
+            "totalPrice": 220,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 220
+        }
+      ],
+      "updatedAt": "2026-04-13T11:01:16.535Z"
+    },
+    "4aa2d6e4-bc8c-43b9-962e-4f23b1e59a99": {
+      "items": [],
+      "updatedAt": "2026-04-14T00:28:21.734Z"
+    },
+    "6f02ab51-6a4a-48eb-b195-5934778e13bf": {
+      "items": [],
+      "updatedAt": "2026-04-14T00:43:23.531Z"
+    },
+    "d8ccbdbb-96cb-4fe1-9d33-fbe292d144f6": {
+      "items": [
+        {
+          "beatId": 5,
+          "beat": {
+            "id": 5,
+            "nom": "TIAKOLA x LETO x RSKO",
+            "prix": 300,
+            "fichier": "1776001647079-studio-belec-33.mp3",
+            "cover": "1776001647072-capture-d-a-cran-2025-10-28-115804.pnglb.png",
+            "bpm": 150,
+            "style": "Melo",
+            "producteur": "STUDIO BELEC",
+            "downloads": 0
+          },
+          "licenseKey": "wav",
+          "license": {
+            "name": "Location WAV",
+            "description": "Fichiers disponibles",
+            "priceSupplement": 30,
+            "totalPrice": 30,
+            "icon": ""
+          },
+          "quantity": 1,
+          "totalPrice": 30
+        }
+      ],
+      "updatedAt": "2026-04-14T22:19:21.612Z"
+    }
+  }
+}

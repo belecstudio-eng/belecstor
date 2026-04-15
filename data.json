@@ -1,0 +1,70 @@
+{
+  "beats": [
+    {
+      "id": 5,
+      "nom": "TIAKOLA x LETO x RSKO",
+      "prix": 300,
+      "fichier": "1776001647079-studio-belec-33.mp3",
+      "cover": "1776001647072-capture-d-a-cran-2025-10-28-115804.pnglb.png",
+      "bpm": 150,
+      "style": "Melo",
+      "producteur": "STUDIO BELEC",
+      "downloads": 0
+    },
+    {
+      "id": 6,
+      "nom": "ryz'y",
+      "prix": 520,
+      "fichier": "1776001873487-studio-belec-31.mp3",
+      "cover": "1776001873473-capture-d-a-cran-2025-05-14-224105k.png",
+      "bpm": 152,
+      "style": "trop",
+      "producteur": "BELEC",
+      "downloads": 0
+    },
+    {
+      "id": 7,
+      "nom": "IDS",
+      "prix": 20,
+      "fichier": "1776010436271-studio-belec-15.mp3",
+      "cover": "1776010436268-capture-d-a-cran-2025-07-31-162947.png",
+      "bpm": 120,
+      "style": "trap",
+      "producteur": "STUDIO BELEC",
+      "downloads": 0
+    },
+    {
+      "id": 8,
+      "nom": "RSKOQ",
+      "prix": 70,
+      "fichier": "1776010835883-studio-belec-31.mp3",
+      "cover": "1776010835880-ccl-dmvq.png",
+      "bpm": 100,
+      "style": "trop",
+      "producteur": "BELEC",
+      "downloads": 0
+    },
+    {
+      "id": 9,
+      "nom": "IDS x KNNG",
+      "prix": 5,
+      "fichier": "1776014093763-studio-belec-13.mp3",
+      "cover": "1776014093749-ei.png",
+      "bpm": 135,
+      "style": "trap",
+      "producteur": "STUDIO BELEC",
+      "downloads": 0
+    },
+    {
+      "id": 10,
+      "nom": "GENEZIO",
+      "prix": 800,
+      "fichier": "1776070261595-studio-belec-15.mp3",
+      "cover": "1776070261591-bckdsbcskc.png",
+      "bpm": 135,
+      "style": "melo",
+      "producteur": "STUDIO BELEC",
+      "downloads": 0
+    }
+  ]
+}

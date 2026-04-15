@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commandes Admin - STUDIO BELEC</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=20260412b">
+    <link rel="stylesheet" href="admin.css?v=20260412b">
+</head>
+<body data-theme="midnight">
+    <header class="header">
+        <div class="header-content">
+            <a href="admin.html" class="logo-link admin-back-link">
+                <button class="menu-toggle admin-back-button" type="button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </a>
+            <div class="logo">
+                <i class="fas fa-box"></i> Commandes Admin
+            </div>
+            <div class="header-icons">
+                <button class="header-theme-btn" data-theme-toggle type="button" aria-label="Changer le theme">
+                    <i class="fas fa-moon" data-theme-toggle-icon></i>
+                    <span class="header-theme-btn-text" data-theme-toggle-text>Mode nuit</span>
+                    <span class="header-theme-btn-state" data-theme-toggle-state>Clair</span>
+                </button>
+                <a href="index.html" class="admin-open-site">Ouvrir le site</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-page">
+        <section class="admin-hero">
+            <div class="container">
+                <h1>Commandes clients</h1>
+                <p>Consultez les commandes, suivez les emails clients automatiques et envoyez le contrat par Gmail depuis cette page admin dediee.</p>
+            </div>
+        </section>
+
+        <section class="admin-section">
+            <div class="container">
+                <div class="admin-card">
+                    <div class="section-title-row orders-page-actions">
+                        <h2>Liste des commandes</h2>
+                        <div class="orders-actions-row">
+                            <button class="refresh-btn" id="refreshOrdersBtn" type="button">
+                                <i class="fas fa-rotate-right"></i> Actualiser
+                            </button>
+                            <button class="admin-danger-btn" id="clearOrdersBtn" type="button">
+                                <i class="fas fa-trash"></i> Tout supprimer
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="ordersMessage" class="admin-message" hidden></div>
+                    <div id="ordersList" class="admin-list empty-state">Chargement des commandes...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="theme.js"></script>
+    <script src="branding.js"></script>
+    <script src="admin-orders.js"></script>
+</body>
+</html>

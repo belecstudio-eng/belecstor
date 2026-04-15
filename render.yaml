@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: studio-belec
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: STORAGE_DIR
+        value: /var/data/studio-belec
+      - key: CONTACT_OWNER_EMAIL
+        value: belecstudio@gmail.com
+      - key: PAYMENT_DEPOSIT_NUMBER
+        value: 0575335641
+      - key: ORDER_DEPOSIT_EMAIL_DELAY_MS
+        value: 60000
+      - key: ORDER_PAYMENT_INSTRUCTIONS_EMAIL_DELAY_MS
+        value: 60000
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CONTACT_SMTP_USER
+        sync: false
+      - key: CONTACT_SMTP_PASS
+        sync: false
+    disk:
+      name: studio-belec-storage
+      mountPath: /var/data/studio-belec
+      sizeGB: 5
