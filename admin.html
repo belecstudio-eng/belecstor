@@ -6,8 +6,8 @@
         <title>Admin Beats - STUDIO BELEC</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=20260415m">
-    <link rel="stylesheet" href="admin.css?v=20260415m">
+    <link rel="stylesheet" href="style.css?v=20260416a">
+    <link rel="stylesheet" href="admin.css?v=20260416a">
 </head>
 <body data-theme="midnight">
     <header class="header">
@@ -112,10 +112,16 @@
                             <div class="form-group">
                                 <label for="siteLogo">Choisir un logo</label>
                                 <input type="file" id="siteLogo" name="logo" accept=".jpg,.jpeg,.png,.webp" required>
+                                <p class="branding-helper-text">Apres selection, vous pourrez zoomer et recadrer le logo dans un cercle avant l envoi.</p>
                             </div>
 
+                            <div id="logoDraftPreview" class="branding-draft-preview empty-state">Selectionnez une image pour preparer le cadrage du logo.</div>
+
                             <div class="admin-form-actions branding-actions">
-                                <button type="submit" class="btn-submit admin-submit-btn">
+                                <button type="button" class="admin-secondary-btn" id="openLogoCropBtn" disabled>
+                                    <i class="fas fa-crop-alt"></i> Recadrer l image
+                                </button>
+                                <button type="submit" class="btn-submit admin-submit-btn" id="submitLogoBtn" disabled>
                                     <i class="fas fa-image"></i> Envoyer le logo
                                 </button>
                                 <button type="button" class="admin-danger-btn" id="deleteLogoBtn">Supprimer le logo</button>
@@ -174,8 +180,44 @@
         </section>
     </main>
 
-    <script src="theme.js"></script>
-    <script src="branding.js"></script>
-    <script src="admin.js"></script>
+    <div class="branding-crop-modal" id="brandingCropModal" hidden>
+        <div class="branding-crop-backdrop" data-close-logo-crop></div>
+        <div class="branding-crop-dialog" role="dialog" aria-modal="true" aria-labelledby="brandingCropTitle">
+            <div class="section-title-row branding-crop-header">
+                <div>
+                    <h2 id="brandingCropTitle">Cadrer le logo</h2>
+                    <p class="branding-crop-copy">Zoomez puis deplacez l image pour bien centrer votre logo dans le cercle.</p>
+                </div>
+                <button type="button" class="admin-danger-btn branding-crop-close" data-close-logo-crop>Fermer</button>
+            </div>
+
+            <div class="branding-crop-layout">
+                <div class="branding-crop-stage">
+                    <div class="branding-crop-viewport" id="brandingCropViewport">
+                        <img id="brandingCropImage" alt="Apercu du cadrage du logo">
+                    </div>
+                </div>
+
+                <div class="branding-crop-sidebar">
+                    <label class="branding-crop-control" for="brandingCropZoom">
+                        <span>Zoom</span>
+                        <input type="range" id="brandingCropZoom" min="1" max="4" step="0.01" value="1">
+                    </label>
+                    <p class="branding-crop-tip">Astuce: faites glisser l image dans le cercle pour ajuster le cadrage.</p>
+
+                    <div class="branding-crop-actions">
+                        <button type="button" class="admin-secondary-btn" id="brandingCropResetBtn">Reinitialiser</button>
+                        <button type="button" class="btn-submit admin-submit-btn" id="brandingCropApplyBtn">
+                            <i class="fas fa-circle-notch"></i> Utiliser ce cadrage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="theme.js?v=20260416a"></script>
+    <script src="branding.js?v=20260416a"></script>
+    <script src="admin.js?v=20260416a"></script>
 </body>
 </html>

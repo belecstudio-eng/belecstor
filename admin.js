@@ -6,9 +6,39 @@ const audiosList = document.getElementById('audiosList');
 const refreshBeatsBtn = document.getElementById('refreshBeatsBtn');
 const refreshMediaBtn = document.getElementById('refreshMediaBtn');
 const brandingForm = document.getElementById('brandingForm');
+const siteLogoInput = document.getElementById('siteLogo');
 const brandingPreview = document.getElementById('brandingPreview');
+const logoDraftPreview = document.getElementById('logoDraftPreview');
+const openLogoCropBtn = document.getElementById('openLogoCropBtn');
+const submitLogoBtn = document.getElementById('submitLogoBtn');
 const deleteLogoBtn = document.getElementById('deleteLogoBtn');
 const openOrdersPageBtn = document.getElementById('openOrdersPageBtn');
+const brandingCropModal = document.getElementById('brandingCropModal');
+const brandingCropViewport = document.getElementById('brandingCropViewport');
+const brandingCropImage = document.getElementById('brandingCropImage');
+const brandingCropZoom = document.getElementById('brandingCropZoom');
+const brandingCropResetBtn = document.getElementById('brandingCropResetBtn');
+const brandingCropApplyBtn = document.getElementById('brandingCropApplyBtn');
+
+const logoCropState = {
+    viewportSize: 0,
+    sourceFile: null,
+    sourceUrl: '',
+    image: null,
+    zoom: 1,
+    minZoom: 1,
+    maxZoom: 4,
+    offsetX: 0,
+    offsetY: 0,
+    dragging: false,
+    pointerId: null,
+    dragStartX: 0,
+    dragStartY: 0,
+    dragOriginX: 0,
+    dragOriginY: 0,
+    croppedFile: null,
+    croppedUrl: ''
+};
 
 const adminBaseUrl = (() => {
     const currentUrl = new URL(window.location.href);
@@ -68,6 +98,191 @@ function escapeHtml(value) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+}
+
+function revokeObjectUrl(url) {
+    if (url) {
+        URL.revokeObjectURL(url);
+    }
+}
+
+function getCropViewportSize() {
+    if (!brandingCropViewport) {
+        return 0;
+    }
+
+    return brandingCropViewport.clientWidth || 320;
+}
+
+function clampCropOffsets() {
+    if (!logoCropState.image) {
+        return;
+    }
+
+    const viewportSize = logoCropState.viewportSize || getCropViewportSize();
+    const renderedWidth = logoCropState.image.naturalWidth * logoCropState.minZoom * logoCropState.zoom;
+    const renderedHeight = logoCropState.image.naturalHeight * logoCropState.minZoom * logoCropState.zoom;
+    const maxOffsetX = Math.max(0, (renderedWidth - viewportSize) / 2);
+    const maxOffsetY = Math.max(0, (renderedHeight - viewportSize) / 2);
+
+    logoCropState.offsetX = Math.min(maxOffsetX, Math.max(-maxOffsetX, logoCropState.offsetX));
+    logoCropState.offsetY = Math.min(maxOffsetY, Math.max(-maxOffsetY, logoCropState.offsetY));
+}
+
+function updateCropImageTransform() {
+    if (!brandingCropImage || !logoCropState.image) {
+        return;
+    }
+
+    clampCropOffsets();
+
+    const scale = logoCropState.minZoom * logoCropState.zoom;
+    brandingCropImage.style.transform = `translate(calc(-50% + ${logoCropState.offsetX}px), calc(-50% + ${logoCropState.offsetY}px)) scale(${scale})`;
+}
+
+function resetCropFrame() {
+    if (!logoCropState.image) {
+        return;
+    }
+
+    const viewportSize = getCropViewportSize();
+    logoCropState.viewportSize = viewportSize;
+    logoCropState.minZoom = Math.max(
+        viewportSize / logoCropState.image.naturalWidth,
+        viewportSize / logoCropState.image.naturalHeight
+    );
+    logoCropState.zoom = 1;
+    logoCropState.offsetX = 0;
+    logoCropState.offsetY = 0;
+
+    if (brandingCropZoom) {
+        brandingCropZoom.value = '1';
+    }
+
+    updateCropImageTransform();
+}
+
+function renderLogoDraftPreview() {
+    if (!logoDraftPreview) {
+        return;
+    }
+
+    if (!logoCropState.croppedUrl || !logoCropState.croppedFile) {
+        logoDraftPreview.className = 'branding-draft-preview empty-state';
+        logoDraftPreview.textContent = 'Selectionnez une image pour preparer le cadrage du logo.';
+        return;
+    }
+
+    logoDraftPreview.className = 'branding-draft-preview';
+    logoDraftPreview.innerHTML = `
+        <img class="branding-draft-preview-image" src="${logoCropState.croppedUrl}" alt="Apercu du logo recadre">
+        <div class="media-hint">Pret a envoyer: ${escapeHtml(logoCropState.croppedFile.name)}</div>
+    `;
+}
+
+function syncBrandingActionState() {
+    if (openLogoCropBtn) {
+        openLogoCropBtn.disabled = !logoCropState.sourceFile;
+    }
+
+    if (submitLogoBtn) {
+        submitLogoBtn.disabled = !logoCropState.croppedFile;
+    }
+}
+
+function closeBrandingCropModal() {
+    if (!brandingCropModal) {
+        return;
+    }
+
+    brandingCropModal.hidden = true;
+    document.body.classList.remove('branding-crop-open');
+    logoCropState.dragging = false;
+    logoCropState.pointerId = null;
+    brandingCropViewport?.classList.remove('is-dragging');
+
+    if (brandingCropImage) {
+        brandingCropImage.removeAttribute('src');
+    }
+
+    revokeObjectUrl(logoCropState.sourceUrl);
+    logoCropState.sourceUrl = '';
+    logoCropState.sourceFile = null;
+    logoCropState.image = null;
+}
+
+function openBrandingCropModal(file) {
+    if (!brandingCropModal || !brandingCropImage || !brandingCropZoom || !file) {
+        return;
+    }
+
+    const sourceUrl = URL.createObjectURL(file);
+    const previewImage = new Image();
+
+    previewImage.onload = () => {
+        revokeObjectUrl(logoCropState.sourceUrl);
+        logoCropState.sourceUrl = sourceUrl;
+        logoCropState.sourceFile = file;
+        logoCropState.image = previewImage;
+        brandingCropImage.src = sourceUrl;
+        brandingCropModal.hidden = false;
+        document.body.classList.add('branding-crop-open');
+        resetCropFrame();
+    };
+
+    previewImage.onerror = () => {
+        revokeObjectUrl(sourceUrl);
+        showMessage('Impossible de charger cette image pour le recadrage.', 'error');
+    };
+
+    previewImage.src = sourceUrl;
+}
+
+async function buildCroppedLogoFile() {
+    if (!logoCropState.image || !logoCropState.sourceFile) {
+        throw new Error('Choisissez une image avant de recadrer le logo.');
+    }
+
+    const outputSize = 800;
+    const viewportSize = logoCropState.viewportSize || getCropViewportSize();
+    const scale = logoCropState.minZoom * logoCropState.zoom;
+    const canvas = document.createElement('canvas');
+    canvas.width = outputSize;
+    canvas.height = outputSize;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+        throw new Error('Le navigateur ne permet pas de preparer ce cadrage.');
+    }
+
+    const multiplier = outputSize / viewportSize;
+    const drawWidth = logoCropState.image.naturalWidth * scale * multiplier;
+    const drawHeight = logoCropState.image.naturalHeight * scale * multiplier;
+    const drawX = (outputSize / 2) - (drawWidth / 2) + (logoCropState.offsetX * multiplier);
+    const drawY = (outputSize / 2) - (drawHeight / 2) + (logoCropState.offsetY * multiplier);
+
+    context.clearRect(0, 0, outputSize, outputSize);
+    context.save();
+    context.beginPath();
+    context.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+    context.closePath();
+    context.clip();
+    context.drawImage(logoCropState.image, drawX, drawY, drawWidth, drawHeight);
+    context.restore();
+
+    const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob((value) => {
+            if (value) {
+                resolve(value);
+                return;
+            }
+
+            reject(new Error('Impossible de generer l image recadree.'));
+        }, 'image/png');
+    });
+
+    const originalBaseName = logoCropState.sourceFile.name.replace(/\.[^.]+$/, '') || 'logo';
+    return new File([blob], `${originalBaseName}-cropped.png`, { type: 'image/png' });
 }
 
 function renderBeats(beats) {
@@ -264,11 +479,167 @@ if (openOrdersPageBtn) {
     });
 }
 
+if (siteLogoInput) {
+    siteLogoInput.addEventListener('change', () => {
+        const [file] = Array.from(siteLogoInput.files || []);
+
+        if (!file) {
+            logoCropState.sourceFile = null;
+            revokeObjectUrl(logoCropState.croppedUrl);
+            logoCropState.croppedUrl = '';
+            logoCropState.croppedFile = null;
+            renderLogoDraftPreview();
+            syncBrandingActionState();
+            return;
+        }
+
+        logoCropState.sourceFile = file;
+        revokeObjectUrl(logoCropState.croppedUrl);
+        logoCropState.croppedUrl = '';
+        logoCropState.croppedFile = null;
+        renderLogoDraftPreview();
+        syncBrandingActionState();
+    });
+}
+
+if (openLogoCropBtn) {
+    openLogoCropBtn.addEventListener('click', () => {
+        if (!logoCropState.sourceFile) {
+            showMessage('Choisissez d abord une image a recadrer.', 'error');
+            return;
+        }
+
+        openBrandingCropModal(logoCropState.sourceFile);
+    });
+}
+
+if (brandingCropZoom) {
+    brandingCropZoom.addEventListener('input', () => {
+        logoCropState.zoom = Number(brandingCropZoom.value) || 1;
+        updateCropImageTransform();
+    });
+}
+
+if (brandingCropResetBtn) {
+    brandingCropResetBtn.addEventListener('click', () => {
+        resetCropFrame();
+    });
+}
+
+if (brandingCropViewport) {
+    brandingCropViewport.addEventListener('pointerdown', (event) => {
+        if (!logoCropState.image) {
+            return;
+        }
+
+        logoCropState.dragging = true;
+        logoCropState.pointerId = event.pointerId;
+        logoCropState.dragStartX = event.clientX;
+        logoCropState.dragStartY = event.clientY;
+        logoCropState.dragOriginX = logoCropState.offsetX;
+        logoCropState.dragOriginY = logoCropState.offsetY;
+        brandingCropViewport.classList.add('is-dragging');
+        brandingCropViewport.setPointerCapture(event.pointerId);
+    });
+
+    brandingCropViewport.addEventListener('pointermove', (event) => {
+        if (!logoCropState.dragging || logoCropState.pointerId !== event.pointerId) {
+            return;
+        }
+
+        logoCropState.offsetX = logoCropState.dragOriginX + (event.clientX - logoCropState.dragStartX);
+        logoCropState.offsetY = logoCropState.dragOriginY + (event.clientY - logoCropState.dragStartY);
+        updateCropImageTransform();
+    });
+
+    const stopDragging = (event) => {
+        if (logoCropState.pointerId !== null && event.pointerId !== logoCropState.pointerId) {
+            return;
+        }
+
+        logoCropState.dragging = false;
+        logoCropState.pointerId = null;
+        brandingCropViewport.classList.remove('is-dragging');
+    };
+
+    brandingCropViewport.addEventListener('pointerup', stopDragging);
+    brandingCropViewport.addEventListener('pointercancel', stopDragging);
+    brandingCropViewport.addEventListener('wheel', (event) => {
+        if (!logoCropState.image || !brandingCropZoom) {
+            return;
+        }
+
+        event.preventDefault();
+        const currentZoom = Number(brandingCropZoom.value) || 1;
+        const nextZoom = Math.min(logoCropState.maxZoom, Math.max(1, currentZoom + (event.deltaY < 0 ? 0.08 : -0.08)));
+        brandingCropZoom.value = nextZoom.toFixed(2);
+        logoCropState.zoom = nextZoom;
+        updateCropImageTransform();
+    }, { passive: false });
+}
+
+if (brandingCropApplyBtn) {
+    brandingCropApplyBtn.addEventListener('click', async () => {
+        brandingCropApplyBtn.disabled = true;
+
+        try {
+            const croppedFile = await buildCroppedLogoFile();
+            revokeObjectUrl(logoCropState.croppedUrl);
+            logoCropState.croppedFile = croppedFile;
+            logoCropState.croppedUrl = URL.createObjectURL(croppedFile);
+            renderLogoDraftPreview();
+            closeBrandingCropModal();
+            logoCropState.sourceFile = croppedFile;
+            syncBrandingActionState();
+            showMessage('Cadrage du logo pret. Vous pouvez maintenant envoyer le fichier.', 'success');
+        } catch (error) {
+            showMessage(error.message, 'error');
+        } finally {
+            brandingCropApplyBtn.disabled = false;
+        }
+    });
+}
+
+document.querySelectorAll('[data-close-logo-crop]').forEach((button) => {
+    button.addEventListener('click', () => {
+        closeBrandingCropModal();
+        if (siteLogoInput && !logoCropState.croppedFile) {
+            siteLogoInput.value = '';
+            logoCropState.sourceFile = null;
+            syncBrandingActionState();
+        }
+    });
+});
+
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && brandingCropModal && !brandingCropModal.hidden) {
+        closeBrandingCropModal();
+        if (siteLogoInput && !logoCropState.croppedFile) {
+            siteLogoInput.value = '';
+            logoCropState.sourceFile = null;
+            syncBrandingActionState();
+        }
+    }
+});
+
+window.addEventListener('resize', () => {
+    if (brandingCropModal && !brandingCropModal.hidden && logoCropState.image) {
+        resetCropFrame();
+    }
+});
+
 if (brandingForm) {
     brandingForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const formData = new FormData(brandingForm);
-        const submitButton = brandingForm.querySelector('button[type="submit"]');
+        const submitButton = submitLogoBtn || brandingForm.querySelector('button[type="submit"]');
+
+        if (!logoCropState.croppedFile) {
+            showMessage('Selectionnez votre image puis validez son cadrage avant l envoi.', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('logo', logoCropState.croppedFile, logoCropState.croppedFile.name);
 
         submitButton.disabled = true;
         showMessage('Envoi du logo en cours...', 'success');
@@ -280,6 +651,12 @@ if (brandingForm) {
             });
 
             brandingForm.reset();
+            revokeObjectUrl(logoCropState.croppedUrl);
+            logoCropState.croppedFile = null;
+            logoCropState.croppedUrl = '';
+            logoCropState.sourceFile = null;
+            renderLogoDraftPreview();
+            syncBrandingActionState();
             renderBranding(result);
             if (window.SiteBranding && typeof window.SiteBranding.load === 'function') {
                 window.SiteBranding.load().catch(() => undefined);
@@ -292,6 +669,9 @@ if (brandingForm) {
         }
     });
 }
+
+renderLogoDraftPreview();
+syncBrandingActionState();
 
 if (deleteLogoBtn) {
     deleteLogoBtn.addEventListener('click', async () => {
