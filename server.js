@@ -39,6 +39,8 @@ const MONGODB_DB_NAME = String(process.env.MONGODB_DB_NAME || '').trim() || 'stu
 const STORAGE_BACKEND = String(process.env.STORAGE_BACKEND || (MONGODB_URI ? 'mongodb' : 'filesystem')).trim().toLowerCase() || 'filesystem';
 const USE_MONGODB = STORAGE_BACKEND === 'mongodb';
 const PAYMENT_DEPOSIT_NUMBER = process.env.PAYMENT_DEPOSIT_NUMBER || '0575335641';
+const DEFAULT_WAVE_PAYMENT_URL = 'https://pay.wave.com/m/M_ci_rX_FR053YqGI/c/ci/';
+const WAVE_PAYMENT_URL = String(process.env.WAVE_PAYMENT_URL || DEFAULT_WAVE_PAYMENT_URL).trim() || DEFAULT_WAVE_PAYMENT_URL;
 const ORDER_DEPOSIT_EMAIL_DELAY_MS = Number.isFinite(Number(process.env.ORDER_DEPOSIT_EMAIL_DELAY_MS))
   ? Number(process.env.ORDER_DEPOSIT_EMAIL_DELAY_MS)
   : 60 * 1000;
@@ -263,8 +265,12 @@ function formatPrice(amount) {
   }).format(Number(amount) || 0);
 }
 
+function isWavePaymentMethod(method) {
+  return String(method || '').trim().toLowerCase() === 'wave';
+}
+
 function formatPaymentMethod(method) {
-  if (method === 'wave') {
+  if (isWavePaymentMethod(method)) {
     return 'Wave';
   }
 
@@ -385,14 +391,17 @@ function getOrderCreatedTimestamp(createdAt) {
   return Number.isFinite(timestamp) ? timestamp : Date.now();
 }
 
-function buildScheduledCustomerEmailState(createdAt) {
+function buildScheduledCustomerEmailState(createdAt, paymentMethod = '') {
   const baseTimestamp = getOrderCreatedTimestamp(createdAt);
+  const isWave = isWavePaymentMethod(paymentMethod);
 
   return {
-    depositNumber: buildCustomerEmailEntry(
-      'scheduled',
-      new Date(baseTimestamp + ORDER_DEPOSIT_EMAIL_DELAY_MS).toISOString()
-    ),
+    depositNumber: isWave
+      ? buildCustomerEmailEntry('not-applicable')
+      : buildCustomerEmailEntry(
+        'scheduled',
+        new Date(baseTimestamp + ORDER_DEPOSIT_EMAIL_DELAY_MS).toISOString()
+      ),
     paymentInstructions: buildCustomerEmailEntry(
       'scheduled',
       new Date(baseTimestamp + ORDER_PAYMENT_INSTRUCTIONS_EMAIL_DELAY_MS).toISOString()
@@ -401,9 +410,9 @@ function buildScheduledCustomerEmailState(createdAt) {
   };
 }
 
-function buildLegacyCustomerEmailState() {
+function buildLegacyCustomerEmailState(paymentMethod = '') {
   return {
-    depositNumber: buildCustomerEmailEntry('not-scheduled'),
+    depositNumber: isWavePaymentMethod(paymentMethod) ? buildCustomerEmailEntry('not-applicable') : buildCustomerEmailEntry('not-scheduled'),
     paymentInstructions: buildCustomerEmailEntry('not-scheduled'),
     contract: buildCustomerEmailEntry('pending')
   };
@@ -442,15 +451,16 @@ function normalizeStoredOrder(rawOrder) {
     ? rawOrder.items.map(normalizeOrderItem).filter((item) => item.beatName && item.licenseName)
     : [];
   const createdAt = String(rawOrder?.createdAt || '').trim() || new Date().toISOString();
+  const paymentMethod = String(rawOrder?.paymentMethod || '').trim();
   const customerEmailFallbacks = rawOrder?.customerEmails
-    ? buildScheduledCustomerEmailState(createdAt)
-    : buildLegacyCustomerEmailState();
+    ? buildScheduledCustomerEmailState(createdAt, paymentMethod)
+    : buildLegacyCustomerEmailState(paymentMethod);
 
   return {
     id: String(rawOrder?.id || crypto.randomUUID()).trim(),
     fullName: String(rawOrder?.fullName || '').trim(),
     email: String(rawOrder?.email || '').trim(),
-    paymentMethod: String(rawOrder?.paymentMethod || '').trim(),
+    paymentMethod,
     totalPrice: Number(rawOrder?.totalPrice) || 0,
     itemCount: Math.max(1, Number(rawOrder?.itemCount) || getOrderItemCount(items) || 1),
     status: String(rawOrder?.status || 'pending-payment').trim() || 'pending-payment',
@@ -466,7 +476,7 @@ function normalizeStoredOrder(rawOrder) {
 }
 
 function getPaymentAppName(method) {
-  return method === 'wave' ? 'Wave' : 'TapTapSend';
+  return isWavePaymentMethod(method) ? 'Wave' : 'TapTapSend';
 }
 
 function buildOrderCustomerRecapLines(order) {
@@ -499,6 +509,32 @@ function buildDepositNumberEmailText(order) {
 }
 
 function buildPaymentInstructionsEmailText(order) {
+  if (isWavePaymentMethod(order.paymentMethod)) {
+    return [
+      `Bonjour ${order.fullName || 'Client'},`,
+      '',
+      'Votre commande STUDIO BELEC a bien ete enregistree.',
+      '',
+      'Vous avez choisi le paiement par Wave.',
+      'Utilisez le lien ci-dessous pour ouvrir la page de paiement Wave et afficher le QR code :',
+      WAVE_PAYMENT_URL,
+      '',
+      `Montant exact a regler: ${formatPrice(order.totalPrice)}`,
+      '',
+      'Etapes a suivre :',
+      '1. Ouvrez le lien Wave depuis votre telephone.',
+      '2. Scannez le QR code affiche ou poursuivez directement le paiement sur la page Wave.',
+      `3. Verifiez que le montant affiche correspond bien a ${formatPrice(order.totalPrice)}.`,
+      '4. Validez le paiement.',
+      '5. Conservez votre preuve de paiement.',
+      '',
+      'Recap commande :',
+      ...buildOrderCustomerRecapLines(order),
+      '',
+      'STUDIO BELEC'
+    ].join('\n');
+  }
+
   return [
     `Bonjour ${order.fullName || 'Client'},`,
     '',
@@ -1415,7 +1451,9 @@ async function processScheduledOrderCustomerEmail(orderId, emailKey) {
   let result = buildCustomerEmailEntry('failed', '', '', 'Type d email client inconnu.');
 
   if (emailKey === 'depositNumber') {
-    result = await sendDepositNumberEmail(order);
+    result = isWavePaymentMethod(order.paymentMethod)
+      ? buildCustomerEmailEntry('not-applicable')
+      : await sendDepositNumberEmail(order);
   }
 
   if (emailKey === 'paymentInstructions') {
@@ -1795,7 +1833,7 @@ app.post('/api/orders', async (req, res) => {
         emailSentAt: '',
         emailError: ''
       },
-      customerEmails: buildScheduledCustomerEmailState(createdAt)
+      customerEmails: buildScheduledCustomerEmailState(createdAt, paymentMethod)
     };
 
     order.notification = await sendOrderEmail(order);
@@ -1845,6 +1883,22 @@ app.post('/api/orders/:orderId/send-deposit-number', requireAdminAuth, async (re
     }
 
     const order = store.orders[orderIndex];
+    if (isWavePaymentMethod(order.paymentMethod)) {
+      order.customerEmails.depositNumber = {
+        ...order.customerEmails.depositNumber,
+        status: 'not-applicable',
+        scheduledFor: '',
+        sentAt: '',
+        error: ''
+      };
+      store.orders[orderIndex] = normalizeStoredOrder(order);
+      await writeOrders(store);
+      res.status(400).json({
+        error: 'Le numero de depot ne s applique pas aux commandes Wave. Utilisez l email de consignes Wave.'
+      });
+      return;
+    }
+
     clearOrderCustomerEmailTimer(orderId, 'depositNumber');
     const result = await sendDepositNumberEmail(order);
 
@@ -1935,17 +1989,29 @@ app.post('/api/orders/:orderId/send-all', requireAdminAuth, async (req, res) => 
     }
 
     const order = store.orders[orderIndex];
-    clearOrderCustomerEmailTimer(orderId, 'depositNumber');
+    const isWave = isWavePaymentMethod(order.paymentMethod);
     clearOrderCustomerEmailTimer(orderId, 'paymentInstructions');
+    let depositResult = buildCustomerEmailEntry('not-applicable');
 
-    const depositResult = await sendDepositNumberEmail(order);
-    order.customerEmails.depositNumber = {
-      ...order.customerEmails.depositNumber,
-      status: depositResult.status,
-      scheduledFor: '',
-      sentAt: depositResult.sentAt,
-      error: depositResult.error
-    };
+    if (isWave) {
+      order.customerEmails.depositNumber = {
+        ...order.customerEmails.depositNumber,
+        status: 'not-applicable',
+        scheduledFor: '',
+        sentAt: '',
+        error: ''
+      };
+    } else {
+      clearOrderCustomerEmailTimer(orderId, 'depositNumber');
+      depositResult = await sendDepositNumberEmail(order);
+      order.customerEmails.depositNumber = {
+        ...order.customerEmails.depositNumber,
+        status: depositResult.status,
+        scheduledFor: '',
+        sentAt: depositResult.sentAt,
+        error: depositResult.error
+      };
+    }
 
     const instructionsResult = await sendPaymentInstructionsEmail(order);
     order.customerEmails.paymentInstructions = {
@@ -1968,11 +2034,11 @@ app.post('/api/orders/:orderId/send-all', requireAdminAuth, async (req, res) => 
     await writeOrders(store);
 
     const results = [depositResult, instructionsResult, contractResult];
-    const hasFailure = results.some((result) => result.status !== 'sent');
+    const hasFailure = results.some((result) => !['sent', 'not-applicable'].includes(result.status));
 
     if (hasFailure) {
       const errorMessages = [
-        depositResult.status !== 'sent' ? `Numero: ${depositResult.error || depositResult.status}` : '',
+        !['sent', 'not-applicable'].includes(depositResult.status) ? `Numero: ${depositResult.error || depositResult.status}` : '',
         instructionsResult.status !== 'sent' ? `Consignes: ${instructionsResult.error || instructionsResult.status}` : '',
         contractResult.status !== 'sent' ? `Contrat: ${contractResult.error || contractResult.status}` : ''
       ].filter(Boolean).join(' | ');
@@ -1983,7 +2049,11 @@ app.post('/api/orders/:orderId/send-all', requireAdminAuth, async (req, res) => 
       return;
     }
 
-    res.json({ message: 'Numero, consignes et contrat envoyes par Gmail au client.' });
+    res.json({
+      message: isWave
+        ? 'Email Wave et contrat envoyes par Gmail au client.'
+        : 'Numero, consignes et contrat envoyes par Gmail au client.'
+    });
   } catch (error) {
     res.status(500).json({ error: 'Impossible d envoyer tous les emails.' });
   }

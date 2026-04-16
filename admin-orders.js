@@ -110,6 +110,10 @@ function formatEmailStatus(notification) {
 function formatCustomerEmailStatus(entry) {
     const status = String(entry?.status || '').trim();
 
+    if (status === 'not-applicable') {
+        return 'Integre aux consignes Wave';
+    }
+
     if (status === 'scheduled') {
         return entry?.scheduledFor
             ? `Programme le ${formatOrderDate(entry.scheduledFor)}`
@@ -248,6 +252,7 @@ function renderOrders(orders) {
 
     ordersList.className = 'admin-list';
     ordersList.innerHTML = orders.map((order) => {
+        const isWavePayment = String(order.paymentMethod || '').trim().toLowerCase() === 'wave';
         const items = Array.isArray(order.items) ? order.items : [];
         const customerEmails = order.customerEmails || {};
         const itemCount = Number(order.itemCount) || items.reduce((sum, item) => sum + Math.max(1, Number(item?.quantity) || 1), 0);
@@ -308,7 +313,7 @@ function renderOrders(orders) {
                             <span><strong>Statut:</strong> ${escapeHtml(formatOrderStatus(order.status))}</span>
                             <span><strong>Licences:</strong> ${escapeHtml(licenses)}</span>
                             <span><strong>Admin email:</strong> ${escapeHtml(formatEmailStatus(order.notification))}</span>
-                            <span><strong>Client numero:</strong> ${escapeHtml(formatCustomerEmailStatus(customerEmails.depositNumber))}</span>
+                            <span><strong>${isWavePayment ? 'Client lien Wave:' : 'Client numero:'}</strong> ${escapeHtml(formatCustomerEmailStatus(customerEmails.depositNumber))}</span>
                             <span><strong>Client consignes:</strong> ${escapeHtml(formatCustomerEmailStatus(customerEmails.paymentInstructions))}</span>
                             <span><strong>Contrat client:</strong> ${escapeHtml(formatCustomerEmailStatus(customerEmails.contract))}</span>
                         </div>
@@ -318,9 +323,11 @@ function renderOrders(orders) {
                         <button class="admin-secondary-btn" type="button" data-send-all="${escapeHtml(order.id)}">
                             <i class="fas fa-bolt"></i> Envoyer tout
                         </button>
+                        ${isWavePayment ? '' : `
                         <button class="admin-secondary-btn" type="button" data-send-deposit-number="${escapeHtml(order.id)}">
                             <i class="fas fa-hashtag"></i> Envoyer numero
                         </button>
+                        `}
                         <button class="admin-secondary-btn" type="button" data-send-payment-instructions="${escapeHtml(order.id)}">
                             <i class="fas fa-list-check"></i> Envoyer consignes
                         </button>

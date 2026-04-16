@@ -935,69 +935,82 @@ body:not([data-theme]) .view-toggle {
 
 @media (max-width: 760px) {
     .beats-grid.view-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.7rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
         width: 100%;
         max-width: 100%;
     }
 
     .beats-grid.view-grid .produit {
-        padding: 0.45rem 0.4rem;
-        gap: 0.4rem;
+        padding: 0.6rem 0.55rem;
+        gap: 0.5rem;
     }
 
     .beats-grid.view-grid .produit-media,
     .beats-grid.view-grid .produit-image {
-        width: min(100%, 108px);
-        height: min(100%, 108px);
+        width: min(100%, 132px);
+        height: min(100%, 132px);
     }
 
     .beats-grid.view-grid .produit-title-trigger {
-        font-size: 0.88rem;
+        font-size: 0.94rem;
         line-height: 1.2;
     }
 
     .beats-grid.view-grid .produit-meta {
-        gap: 0.35rem;
-        font-size: 0.72rem;
+        gap: 0.42rem 0.55rem;
+        font-size: 0.78rem;
     }
 
     .beats-grid.view-grid .btn-price {
-        padding: 0.7rem 0.55rem;
-        font-size: 0.88rem;
+        padding: 0.74rem 0.65rem;
+        font-size: 0.9rem;
+    }
+
+    .beats-grid.view-grid .produit-content {
+        gap: 0.45rem;
+        justify-content: space-between;
+    }
+
+    .beats-grid.view-grid .produit-actions {
+        margin-top: auto;
+    }
+
+    .beats-grid.view-grid .produit-meta span {
+        white-space: nowrap;
     }
 }
 
 @media (max-width: 520px) {
     .beats-grid.view-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.5rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
     }
 
     .beats-grid.view-grid .produit {
-        padding: 0.38rem 0.25rem;
+        padding: 0.52rem 0.42rem;
         border-radius: 18px;
     }
 
     .beats-grid.view-grid .produit-media,
     .beats-grid.view-grid .produit-image {
-        width: min(100%, 86px);
-        height: min(100%, 86px);
+        width: min(100%, 112px);
+        height: min(100%, 112px);
     }
 
     .beats-grid.view-grid .produit-title-trigger,
     .beats-grid.view-grid .produit-name {
-        font-size: 0.76rem;
+        font-size: 0.84rem;
     }
 
     .beats-grid.view-grid .produit-meta {
-        gap: 0.25rem 0.4rem;
-        font-size: 0.64rem;
+        gap: 0.3rem 0.45rem;
+        font-size: 0.7rem;
     }
 
     .beats-grid.view-grid .btn-price {
-        padding: 0.58rem 0.35rem;
-        font-size: 0.78rem;
+        padding: 0.64rem 0.45rem;
+        font-size: 0.82rem;
     }
 }
 

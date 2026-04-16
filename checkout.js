@@ -9,6 +9,7 @@ const CHECKOUT_OWNER_EMAIL = checkoutEmailJsConfig.ownerEmail || 'belecstudio@gm
 const OWNER_PHONE_WAVE = '+225 07 67 22 33 44';
 const OWNER_PHONE_TAPTAPSEND = '+33 1 23 45 67 89';
 const OWNER_NAME = 'SKURTY PROD';
+const WAVE_PAYMENT_URL = 'https://pay.wave.com/m/M_ci_rX_FR053YqGI/c/ci/';
 
 /* ===== ÉTAT DU CHECKOUT ===== */
 let checkoutState = {
@@ -27,7 +28,7 @@ let paymentRedirectTimeoutId = null;
 const PAYMENT_APP_CONFIG = {
     wave: {
         appName: 'Wave',
-        fallbackUrl: 'https://wave.com',
+        fallbackUrl: WAVE_PAYMENT_URL,
         deepLink: 'wave://'
     },
     taptapsend: {
