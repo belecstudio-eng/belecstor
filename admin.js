@@ -10,6 +10,24 @@ const brandingPreview = document.getElementById('brandingPreview');
 const deleteLogoBtn = document.getElementById('deleteLogoBtn');
 const openOrdersPageBtn = document.getElementById('openOrdersPageBtn');
 
+const adminBaseUrl = (() => {
+    const currentUrl = new URL(window.location.href);
+    const hasEmbeddedCredentials = Boolean(currentUrl.username || currentUrl.password);
+
+    currentUrl.username = '';
+    currentUrl.password = '';
+
+    if (hasEmbeddedCredentials && window.history && typeof window.history.replaceState === 'function') {
+        window.history.replaceState({}, document.title, `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
+    }
+
+    return currentUrl.origin;
+})();
+
+function resolveAdminUrl(path) {
+    return new URL(path, `${adminBaseUrl}/`).toString();
+}
+
 if (window.SiteTheme && typeof window.SiteTheme.initThemeControls === 'function') {
     window.SiteTheme.initThemeControls();
 }
@@ -33,7 +51,7 @@ function showMessage(message, type = 'success') {
 }
 
 async function fetchJson(url, options = {}) {
-    const response = await fetch(url, options);
+    const response = await fetch(resolveAdminUrl(url), options);
     const payload = await response.json().catch(() => ({}));
 
     if (!response.ok) {
@@ -241,7 +259,7 @@ if (openOrdersPageBtn) {
         openOrdersPageBtn.innerHTML = `<span class="button-spinner" aria-hidden="true"></span>${escapeHtml(openOrdersPageBtn.dataset.loadingLabel || 'Chargement...')}`;
 
         window.setTimeout(() => {
-            window.location.href = 'admin-orders.html';
+            window.location.href = resolveAdminUrl('admin-orders.html');
         }, 450);
     });
 }

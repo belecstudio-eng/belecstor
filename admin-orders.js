@@ -3,6 +3,24 @@ const ordersMessage = document.getElementById('ordersMessage');
 const refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
 const clearOrdersBtn = document.getElementById('clearOrdersBtn');
 
+const adminOrdersBaseUrl = (() => {
+    const currentUrl = new URL(window.location.href);
+    const hasEmbeddedCredentials = Boolean(currentUrl.username || currentUrl.password);
+
+    currentUrl.username = '';
+    currentUrl.password = '';
+
+    if (hasEmbeddedCredentials && window.history && typeof window.history.replaceState === 'function') {
+        window.history.replaceState({}, document.title, `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
+    }
+
+    return currentUrl.origin;
+})();
+
+function resolveAdminOrdersUrl(path) {
+    return new URL(path, `${adminOrdersBaseUrl}/`).toString();
+}
+
 if (window.SiteTheme && typeof window.SiteTheme.initThemeControls === 'function') {
     window.SiteTheme.initThemeControls();
 }
@@ -18,7 +36,7 @@ function showOrdersMessage(message, type = 'success') {
 }
 
 async function fetchJson(url, options = {}) {
-    const response = await fetch(url, options);
+    const response = await fetch(resolveAdminOrdersUrl(url), options);
     const payload = await response.json().catch(() => ({}));
 
     if (!response.ok) {
