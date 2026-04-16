@@ -1,11 +1,39 @@
 (function () {
-    async function fetchBranding() {
-        const response = await fetch('/api/branding', { cache: 'no-store' });
-        if (!response.ok) {
-            throw new Error('Impossible de charger le logo.');
+    function normalizeBranding(branding) {
+        if (!branding || !branding.logo) {
+            return branding || null;
         }
 
-        return response.json();
+        if (branding.logoUrl) {
+            return branding;
+        }
+
+        const versionSuffix = branding.updatedAt
+            ? `?v=${encodeURIComponent(branding.updatedAt)}`
+            : '';
+
+        return {
+            ...branding,
+            logoUrl: `branding/${encodeURIComponent(branding.logo)}${versionSuffix}`
+        };
+    }
+
+    async function fetchBranding() {
+        try {
+            const response = await fetch('/api/branding', { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error('Impossible de charger le logo depuis l API.');
+            }
+
+            return normalizeBranding(await response.json());
+        } catch (apiError) {
+            const fallbackResponse = await fetch('branding.json', { cache: 'no-store' });
+            if (!fallbackResponse.ok) {
+                throw apiError;
+            }
+
+            return normalizeBranding(await fallbackResponse.json());
+        }
     }
 
     function applyBranding(branding) {
@@ -21,7 +49,7 @@
                 return;
             }
 
-                const label = logoEl.dataset.logoLabel || 'STUDIO BELEC';
+            const label = logoEl.dataset.logoLabel || 'STUDIO BELEC';
             logoEl.classList.add('has-site-logo');
             logoEl.innerHTML = `
                 <img class="site-logo-image" src="${branding.logoUrl}" alt="${label}">
