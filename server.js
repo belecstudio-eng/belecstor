@@ -1095,6 +1095,10 @@ function normalizeBeat(rawBeat) {
   };
 }
 
+function sortBeatsNewestFirst(beats) {
+  return [...beats].sort((firstBeat, secondBeat) => Number(secondBeat.id) - Number(firstBeat.id));
+}
+
 async function ensureStorage() {
   if (USE_MONGODB) {
     await connectMongo();
@@ -1119,7 +1123,7 @@ async function readData() {
   await ensureStorage();
 
   if (USE_MONGODB) {
-    const beats = await mongoCollections.beats.find({}).sort({ id: 1 }).toArray();
+    const beats = await mongoCollections.beats.find({}).sort({ id: -1 }).toArray();
     return {
       beats: beats.map(normalizeBeat)
     };
@@ -1129,7 +1133,7 @@ async function readData() {
     const content = await fsp.readFile(DATA_FILE, 'utf8');
     const parsed = JSON.parse(content);
     const beats = Array.isArray(parsed.beats) ? parsed.beats.map(normalizeBeat) : [];
-    return { beats };
+    return { beats: sortBeatsNewestFirst(beats) };
   } catch (error) {
     if (error.code === 'ENOENT') {
       await writeData(DEFAULT_DATA);
@@ -2238,7 +2242,7 @@ app.post(
         downloads: 0
       });
 
-      data.beats.push(newBeat);
+      data.beats.unshift(newBeat);
       await writeData(data);
 
       res.status(201).json({
