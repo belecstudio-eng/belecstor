@@ -1318,13 +1318,11 @@ document.addEventListener('DOMContentLoaded', () => {
     syncFilterControls();
     loadBeatsData()
         .then(() => {
-            afficherBeats();
-            mettreAJourCompteur();
+            appliquerFiltres();
             updateSearchUi();
         })
         .catch(() => {
-            afficherBeats();
-            mettreAJourCompteur();
+            appliquerFiltres();
             updateSearchUi();
         });
     mettreAJourPanier();
