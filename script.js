@@ -750,6 +750,9 @@ function appliquerFiltres() {
         beatsFiltres.sort((a, b) => b.prix - a.prix);
     } else if (sortBy === 'popular') {
         beatsFiltres.sort((a, b) => b.id - a.id);
+    } else if (sortBy === 'recent') {
+        // Inverser l'ordre pour afficher les plus récents en premier
+        beatsFiltres.sort((a, b) => b.id - a.id);
     }
 
     afficherBeats();
