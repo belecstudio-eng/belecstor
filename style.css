@@ -1,17 +1,19 @@
 /* ===== PANIER & ACTIONS RESPONSIVE MOBILE ===== */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .modal-content {
-        width: 98vw !important;
+        width: calc(100vw - 16px) !important;
         min-width: unset !important;
-        max-width: 98vw !important;
-        border-radius: 10px !important;
-        padding: 0.5rem !important;
+        max-width: calc(100vw - 16px) !important;
+        max-height: calc(100vh - 16px) !important;
+        margin: 8px auto !important;
+        border-radius: 16px !important;
+        padding: 0 !important;
     }
     .modal-header h2 {
         font-size: 1.1rem;
     }
     .modal-footer {
-        padding: 0.7rem !important;
+        padding: 0.9rem !important;
         gap: 0.5rem !important;
     }
     .panier-actions {
@@ -42,6 +44,97 @@
     .panier-thumb-image {
         max-width: 60px !important;
         max-height: 60px !important;
+    }
+
+    #panier-items {
+        padding: 1rem !important;
+    }
+
+    .panier-item-main {
+        width: 100%;
+    }
+
+    .item-license-options {
+        width: 100%;
+    }
+
+    .item-license-option {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .verify-ready-modal-content {
+        max-width: calc(100vw - 16px) !important;
+        margin-top: 8px;
+    }
+
+    .modal-checkout {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        min-height: auto;
+    }
+
+    #checkout-modal .progress-bar {
+        padding: 0 0.75rem;
+    }
+
+    #checkout-modal .progress-steps {
+        gap: 0.3rem;
+        align-items: flex-start;
+    }
+
+    #checkout-modal .step-number {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 0.3rem;
+    }
+
+    #checkout-modal .step-label {
+        font-size: 0.68rem;
+        max-width: 62px;
+    }
+
+    #checkout-modal .step-content {
+        padding: 0.95rem;
+    }
+
+    #checkout-modal .payment-option,
+    #checkout-modal .instruction-card,
+    #checkout-modal .order-summary-card,
+    #checkout-modal .payment-instructions-card {
+        padding: 0.95rem;
+        border-radius: 16px;
+    }
+
+    #checkout-modal .step-footer {
+        flex-direction: column;
+    }
+
+    #checkout-modal .btn-step-back,
+    #checkout-modal .btn-step-next,
+    #checkout-modal .btn-pay {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 520px) {
+    #checkout-modal .progress-steps {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem 0.45rem;
+    }
+
+    #checkout-modal .progress-steps::before {
+        display: none;
+    }
+
+    #checkout-modal .step {
+        gap: 0.2rem;
+    }
+
+    #checkout-modal .step-label {
+        max-width: none;
     }
 }
 * {

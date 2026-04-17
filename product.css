@@ -1145,178 +1145,15 @@ body[data-theme="midnight"] .warning-box {
 
 @media (max-width: 1024px) {
     .product-title {
-        font-size: 1.8rem;
-    }
-
-    .price {
-        font-size: 2rem;
-    }
-
-    .license-buttons {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .product-detail {
-        padding: 1rem 0;
-    }
-
-    .product-detail > .container {
-        max-width: 440px;
-        padding: 0 8px;
-    }
-
-    .product-detail::before {
-        height: 360px;
-        background-position: center 18%;
-    }
-
-    .product-layout {
-        gap: 1.7rem;
-        align-items: center;
-    }
-
-    .product-left {
-        grid-template-columns: 1fr;
-        gap: 1.3rem;
-        align-items: center;
-        justify-items: center;
-        max-width: 420px;
-        width: 100%;
-        margin: 0 auto;
-    }
-
-    .product-image-wrapper {
-        width: 189px;
-        height: auto;
-        aspect-ratio: 1 / 1;
-        border-radius: 22px;
-    }
-
-    .product-image-and-player {
-        width: 189px;
-        gap: 1rem;
-    }
-
-    .product-image-play {
-        width: 88px;
-        height: 88px;
-    }
-
-    .product-overview {
-        width: 100%;
-        align-items: center;
-        text-align: center;
-        gap: 1.15rem;
-    }
-
-    .producer-info,
-    .price-section {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .product-title {
-        font-size: 2.28rem;
-    }
-
-    .price {
-        font-size: 2.7rem;
-    }
-
-    .producer-name {
-        font-size: 1.25rem;
-    }
-
-    .product-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.95rem;
-        width: 100%;
-    }
-
-    .licenses-section,
-    .product-info {
-        max-width: 420px;
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .licenses-section h3 {
-        text-align: center;
         font-size: 1.7rem;
-        margin-bottom: 1.6rem;
+    }
+
+    .price {
+        font-size: 1.95rem;
     }
 
     .license-buttons {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 0.9rem;
-        max-width: 410px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .license-btn {
-        min-height: 232px;
-        padding: 1.35rem 1.25rem;
-        border-radius: 22px;
-    }
-
-    .license-head {
-        align-items: center;
-    }
-
-    .license-name {
-        font-size: 1.38rem;
-    }
-
-    .license-price {
-        font-size: 1.53rem;
-    }
-
-    .license-desc,
-    .license-contract-trigger {
-        font-size: 1.2rem;
-    }
-
-    .license-btn.active i {
-        opacity: 1;
-        display: block;
-        text-align: center;
-        width: 100%;
-        margin-top: 0.5rem;
-    }
-
-    .tax-info {
-        font-size: 1.3rem;
-    }
-
-    .stat {
-        padding: 1.2rem 1.25rem;
-        border-radius: 22px;
-    }
-
-    .stat-icon-wrap {
-        width: 64px;
-        height: 64px;
-        flex-basis: 64px;
-    }
-
-    .stat-label {
-        font-size: 1rem;
-    }
-
-    .stat-value {
-        font-size: 1.53rem;
-    }
-
-    .info-item {
-        font-size: 1.3rem;
-    }
-
-    .licenses-section {
-        padding-top: 0.3rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -1351,12 +1188,15 @@ body[data-theme="midnight"] .warning-box {
 
     .product-layout {
         gap: 1.25rem;
+        align-items: center;
     }
 
     .product-left,
     .licenses-section,
     .product-info {
         max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .product-image-and-player,
@@ -1432,13 +1272,13 @@ body[data-theme="midnight"] .warning-box {
         min-height: auto;
         padding: 1rem;
         gap: 0.55rem;
-        align-items: flex-start;
-        text-align: left;
+        align-items: center;
+        text-align: center;
     }
 
     .license-head {
-        align-items: flex-start;
-        text-align: left;
+        align-items: center;
+        text-align: center;
         gap: 0.25rem;
     }
 
@@ -1452,31 +1292,31 @@ body[data-theme="midnight"] .warning-box {
 
     .license-desc {
         font-size: 0.85rem;
-        text-align: left;
+        text-align: center;
     }
 
     .license-contract-trigger {
-        align-self: flex-start;
+        align-self: center;
         font-size: 0.82rem;
     }
 
     .license-btn i {
-        left: auto;
-        right: 1rem;
+        left: 50%;
+        right: auto;
         bottom: 1rem;
-        transform: none;
+        transform: translateX(-50%);
     }
 
     .license-btn.active i {
         width: auto;
         margin-top: 0;
-        transform: scale(1.05);
+        transform: translateX(-50%) scale(1.05);
     }
 
     .info-item {
-        justify-content: flex-start;
+        justify-content: center;
         width: 100%;
-        text-align: left;
+        text-align: center;
         font-size: 0.95rem;
     }
 }
@@ -1492,11 +1332,21 @@ body[data-theme="midnight"] .warning-box {
 
     .product-left {
         gap: 1rem;
+        justify-items: center;
     }
 
     .product-image-and-player,
     .product-image-wrapper {
         width: min(100%, 240px);
+    }
+
+    .product-overview,
+    .licenses-section,
+    .product-info,
+    .license-buttons {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .product-stats {
