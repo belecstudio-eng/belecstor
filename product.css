@@ -1189,12 +1189,22 @@ body[data-theme="midnight"] .warning-box {
     .product-layout {
         gap: 1.25rem;
         align-items: center;
+        width: 100%;
     }
 
     .product-left,
     .licenses-section,
     .product-info {
-        max-width: 100%;
+        width: min(100%, 360px);
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .product-overview,
+    .license-buttons {
+        width: 100%;
+        max-width: 360px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -1264,7 +1274,7 @@ body[data-theme="midnight"] .warning-box {
     }
 
     .license-buttons {
-        max-width: none;
+        max-width: 360px;
         gap: 0.75rem;
     }
 
@@ -1344,9 +1354,15 @@ body[data-theme="midnight"] .warning-box {
     .licenses-section,
     .product-info,
     .license-buttons {
-        width: 100%;
+        width: min(100%, 320px);
+        max-width: 320px;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .product-left {
+        width: min(100%, 320px);
+        max-width: 320px;
     }
 
     .product-stats {
