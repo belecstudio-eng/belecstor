@@ -76,12 +76,12 @@ body[data-theme="midnight"] .product-detail::after {
 /* ===== COLONNE GAUCHE : IMAGE ET PLAYER ===== */
 
 .product-left {
-    display: grid;
-    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 1.2rem;
-    align-items: start;
+    align-items: center;
     width: 100%;
-    max-width: 820px;
+    max-width: 520px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -101,6 +101,8 @@ body[data-theme="midnight"] .product-detail::after {
     padding-top: 0.15rem;
     align-items: center;
     text-align: center;
+    width: 100%;
+    max-width: 520px;
 }
 
 .product-image-wrapper {
@@ -286,7 +288,7 @@ body[data-theme="midnight"] .stat-icon-wrap {
     padding: 1.5rem 0;
     border-bottom: 1px solid var(--gray-light);
     margin-bottom: 1rem;
-    max-width: 820px;
+    max-width: 520px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -304,7 +306,7 @@ body[data-theme="midnight"] .stat-icon-wrap {
 
 .license-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 220px));
     gap: 0.8rem;
     margin-bottom: 0;
     align-items: start;
@@ -469,7 +471,7 @@ body[data-theme="midnight"] .license-btn.active .license-desc {
     gap: 0.8rem;
     padding-top: 1rem;
     border-top: 1px solid var(--gray-light);
-    max-width: 820px;
+    max-width: 520px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
