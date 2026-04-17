@@ -73,6 +73,37 @@ body[data-theme="midnight"] .product-detail::after {
     margin: 0 auto;
 }
 
+@media (min-width: 769px) {
+    .product-left {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: center;
+        max-width: 700px;
+    }
+
+    .product-overview {
+        align-items: flex-start;
+        text-align: left;
+        max-width: 440px;
+    }
+
+    .producer-info,
+    .price-section {
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .licenses-section,
+    .product-info {
+        max-width: 700px;
+    }
+
+    .license-buttons {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+}
+
 /* ===== COLONNE GAUCHE : IMAGE ET PLAYER ===== */
 
 .product-left {
