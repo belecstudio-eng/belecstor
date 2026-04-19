@@ -51,7 +51,7 @@ function resolveBeatId(rawBeatId) {
 const licenses = typeof window.getLicenseCatalog === 'function' ? window.getLicenseCatalog() : {
     wav: { key: 'wav', name: 'Location WAV', totalPrice: 30, priceSupplement: 30, priceLabel: '30,00 $', files: ['MP3', 'WAV'], conditions: 'Conditions de licence a venir pour Location WAV.' },
     'wav-stems': { key: 'wav-stems', name: 'Location de STEMS', totalPrice: 80, priceSupplement: 80, priceLabel: '80,00 $', files: ['MP3', 'WAV', 'Trackout'], conditions: 'Conditions de licence a venir pour Location de STEMS.' },
-    'premium-stems': { key: 'premium-stems', name: 'Illimite', totalPrice: 120, priceSupplement: 120, priceLabel: '120,00 $', files: ['MP3', 'WAV', 'Trackout'], conditions: 'Conditions de licence a venir pour Illimite.' },
+    'premium-stems': { key: 'premium-stems', name: 'Illimité', totalPrice: 120, priceSupplement: 120, priceLabel: '120,00 $', files: ['MP3', 'WAV', 'Trackout'], conditions: 'Conditions de licence a venir pour Illimité.' },
     exclusive: { key: 'exclusive', name: 'Exclusif', totalPrice: 220, priceSupplement: 220, priceLabel: '220,00 $', files: ['MP3', 'WAV', 'Trackout'], conditions: 'Conditions de licence a venir pour Exclusif.' }
 };
 
@@ -473,7 +473,6 @@ function addToCart() {
         updateCartBadge();
         updateCartDisplay();
         updateAddCartButtonState();
-        showAlertMessage('Licence mise a jour dans le panier.', 'success');
         return;
     }
 
@@ -493,7 +492,6 @@ function addToCart() {
     // Mettre à jour le badge
     updateCartBadge();
     updateAddCartButtonState();
-    showAlertMessage('Article ajoute au panier.', 'success');
     updateCartDisplay();
     document.getElementById('panier-modal').style.display = 'flex';
 }

@@ -90,8 +90,8 @@ Le Producteur conserve tous les droits.`
         },
         'premium-stems': {
             key: 'premium-stems',
-            name: 'Illimite',
-            shortName: 'Illimite',
+            name: 'Illimité',
+            shortName: 'Illimité',
             totalPrice: 120,
             priceSupplement: 120,
             priceLabel: '120,00 $',

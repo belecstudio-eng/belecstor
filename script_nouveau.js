@@ -6,6 +6,21 @@ let beats = [
 ];
 let panier = [];  // Sera chargé à l'initialisation
 
+const licenseCatalog = typeof window.getLicenseCatalog === 'function' ? window.getLicenseCatalog() : {
+    wav: { key: 'wav', name: 'Location WAV', totalPrice: 30, priceSupplement: 30, priceLabel: '30,00 $', files: ['MP3', 'WAV'] },
+    'wav-stems': { key: 'wav-stems', name: 'Location de STEMS', totalPrice: 80, priceSupplement: 80, priceLabel: '80,00 $', files: ['MP3', 'WAV', 'Trackout'] },
+    'premium-stems': { key: 'premium-stems', name: 'Illimité', totalPrice: 120, priceSupplement: 120, priceLabel: '120,00 $', files: ['MP3', 'WAV', 'Trackout'] },
+    exclusive: { key: 'exclusive', name: 'Exclusif', totalPrice: 220, priceSupplement: 220, priceLabel: '220,00 $', files: ['MP3', 'WAV', 'Trackout'] }
+};
+
+function getLicenseConfig(key) {
+    return licenseCatalog[key] || licenseCatalog.wav;
+}
+
+function getLicenseEntries() {
+    return Object.values(licenseCatalog);
+}
+
 // Fonction pour charger le panier depuis localStorage
 function loadCartFromStorage() {
     panier = JSON.parse(localStorage.getItem('cart')) || [];
@@ -242,17 +257,8 @@ window.addEventListener('click', (e) => {
 // Ajouter au panier
 function ajouterAuPanier(id) {
     const beat = beats.find(b => b.id === id);
-    
-    // Configuration des licences (copié de product.js pour compatibilité)
-    const licenses = {
-        wav: { name: "LICENSE WAV", description: "Accès à la piste WAV", priceSupplement: 20.01, totalPrice: 30, icon: "fa-download" },
-        "wav-stems": { name: "WAV + STEMS", description: "Fichiers séparés par instrument", priceSupplement: 39.01, totalPrice: 48.99, icon: "fa-download" },
-        "premium-stems": { name: "PREMIUM + STEMS", description: "Premium + tous les fichiers", priceSupplement: 110, totalPrice: 119.99, icon: "fa-star" },
-        exclusive: { name: "LICENSE EXCLUSIVE", description: "Droits exclusifs d'utilisation", priceSupplement: 210, totalPrice: 219.99, icon: "fa-crown" }
-    };
-    
     const defaultLicenseKey = 'wav'; // Licence par défaut
-    const license = licenses[defaultLicenseKey];
+    const license = getLicenseConfig(defaultLicenseKey);
     
     // Vérifier si l'article existe déjà avec la même licence
     const itemExistant = panier.find(p => p.beatId === id && p.licenseKey === defaultLicenseKey);
@@ -272,7 +278,6 @@ function ajouterAuPanier(id) {
     
     localStorage.setItem('cart', JSON.stringify(panier));
     mettreAJourPanier();
-    afficherMessage(`✅ ${beat.nom} (${license.name}) ajouté au panier!`);
 }
 
 // Mettre à jour le panier
@@ -284,10 +289,17 @@ function mettreAJourPanier() {
     document.getElementById('panier-count').textContent = count;
     
     const items = document.getElementById('panier-items');
+    const totalElement = document.getElementById('total');
+    if (!items || !totalElement) return;
     
     if (panier.length === 0) {
-        items.innerHTML = '<p class="panier-vide">Votre panier est vide</p>';
-        document.getElementById('total').textContent = '0';
+        items.innerHTML = `
+            <div class="panier-empty-state">
+                <p class="panier-vide-title">Chariot vide</p>
+                <p class="panier-vide-copy">Ajoute une licence pour voir tes beats ici.</p>
+            </div>
+        `;
+        totalElement.textContent = '0';
         return;
     }
     
@@ -297,25 +309,29 @@ function mettreAJourPanier() {
     panier.forEach((item, index) => {
         const itemTotal = item.totalPrice * item.quantity;
         total += itemTotal;
+        const coverUrl = item.beat && item.beat.cover ? `covers/${item.beat.cover}` : '';
+        const beatMeta = [item.beat?.bpm ? `${item.beat.bpm} BPM` : '', item.beat?.style || '']
+            .filter(Boolean)
+            .join(' • ');
         
         const div = document.createElement('div');
         div.className = 'panier-item';
         div.innerHTML = `
-            <div class="item-details">
-                <div class="item-name">${item.beat.nom}</div>
-                <div class="item-license">${item.license.name} (+${item.license.priceSupplement.toFixed(2)}€)</div>
-                <div class="item-quant">
-                    Quantité: <input type="number" min="1" value="${item.quantity}" 
-                        onchange="changerQuantite(${index}, this.value)">
+            <div class="panier-item-main">
+                <div class="panier-thumb${coverUrl ? '' : ' is-fallback'}">
+                    ${coverUrl ? `<img class="panier-thumb-image" src="${coverUrl}" alt="Pochette de ${item.beat.nom}" onerror="this.parentElement.classList.add('is-fallback'); this.remove();">` : ''}
+                    <span class="panier-thumb-fallback">${(item.beat.nom || 'B').charAt(0).toUpperCase()}</span>
                 </div>
-                <div class="item-license-select">
-                    <label>Licence:</label>
-                    <select onchange="changerLicence(${index}, this.value)">
-                        <option value="wav" ${item.licenseKey === 'wav' ? 'selected' : ''}>LICENSE WAV (+20.01€)</option>
-                        <option value="wav-stems" ${item.licenseKey === 'wav-stems' ? 'selected' : ''}>WAV + STEMS (+39.01€)</option>
-                        <option value="premium-stems" ${item.licenseKey === 'premium-stems' ? 'selected' : ''}>PREMIUM + STEMS (+110€)</option>
-                        <option value="exclusive" ${item.licenseKey === 'exclusive' ? 'selected' : ''}>LICENSE EXCLUSIVE (+210€)</option>
-                    </select>
+                <div class="item-details">
+                    <div class="item-name">${item.beat.nom}</div>
+                    <div class="item-meta">${beatMeta}</div>
+                    <div class="item-license">${item.license.name}</div>
+                    <div class="item-license-select">
+                        <label>Licence:</label>
+                        <select onchange="changerLicence(${index}, this.value)">
+                            ${getLicenseEntries().map((license) => `<option value="${license.key}" ${item.licenseKey === license.key ? 'selected' : ''}>${license.name} (${license.priceLabel})</option>`).join('')}
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="item-actions">
@@ -326,7 +342,7 @@ function mettreAJourPanier() {
         items.appendChild(div);
     });
     
-    document.getElementById('total').textContent = total.toFixed(2);
+    totalElement.textContent = total.toFixed(2);
 }
 
 function changerQuantite(index, quantite) {
@@ -341,14 +357,7 @@ function changerQuantite(index, quantite) {
 }
 
 function changerLicence(index, licenseKey) {
-    const licenses = {
-        wav: { name: "LICENSE WAV", description: "Accès à la piste WAV", priceSupplement: 20.01, totalPrice: 30, icon: "fa-download" },
-        "wav-stems": { name: "WAV + STEMS", description: "Fichiers séparés par instrument", priceSupplement: 39.01, totalPrice: 48.99, icon: "fa-download" },
-        "premium-stems": { name: "PREMIUM + STEMS", description: "Premium + tous les fichiers", priceSupplement: 110, totalPrice: 119.99, icon: "fa-star" },
-        exclusive: { name: "LICENSE EXCLUSIVE", description: "Droits exclusifs d'utilisation", priceSupplement: 210, totalPrice: 219.99, icon: "fa-crown" }
-    };
-    
-    const newLicense = licenses[licenseKey];
+    const newLicense = getLicenseConfig(licenseKey);
     if (newLicense) {
         panier[index].licenseKey = licenseKey;
         panier[index].license = newLicense;

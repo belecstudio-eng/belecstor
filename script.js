@@ -76,6 +76,31 @@ function formatLicenseFiles(files) {
     return Array.isArray(files) ? files.join(' , ') : '';
 }
 
+function renderCartLicenseOption(license, isActive, index) {
+    return `
+        <article
+            class="item-license-option${isActive ? ' is-active' : ''}"
+            role="button"
+            tabindex="0"
+            aria-label="Choisir ${license.name}"
+            onclick="changerLicence(${index}, '${license.key}')"
+            onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); changerLicence(${index}, '${license.key}'); }"
+        >
+            <div class="item-license-head">
+                <span class="item-license-name">${license.name}</span>
+                <strong class="item-license-price">${license.priceLabel}</strong>
+            </div>
+            <div class="item-license-desc">${formatLicenseFiles(license.files)}</div>
+            <button
+                class="item-license-contract-trigger"
+                type="button"
+                onclick="event.stopPropagation(); ouvrirConditionsLicencePanier(${index}, '${license.key}')"
+            >Condition de contrat</button>
+            <i class="fas fa-check-circle"></i>
+        </article>
+    `;
+}
+
 function formatBeatDuration(seconds) {
     if (!Number.isFinite(seconds) || seconds <= 0) {
         return '--:--';
@@ -990,7 +1015,6 @@ function ajouterAuPanier(id, licenseKey = 'wav') {
     const itemExistant = panier.find(p => Number(p.beatId) === Number(id));
     
     if (itemExistant) {
-        afficherMessage('Cet article est deja dans ton panier.', 'info');
         updateAddToCartButtons();
         closeLicenseModal();
         return;
@@ -1008,9 +1032,18 @@ function ajouterAuPanier(id, licenseKey = 'wav') {
     localStorage.setItem('cart', JSON.stringify(panier));
     mettreAJourPanier();
     updateAddToCartButtons();
-    afficherMessage('Article ajoute au panier.', 'success');
     closeLicenseModal();
     openCartModal();
+}
+
+function ouvrirConditionsLicencePanier(index, licenseKey) {
+    const item = panier[index];
+    if (!item || !item.beat) {
+        return;
+    }
+
+    ouvrirModalLicence(item.beat.id);
+    updateLicenseConditions(licenseKey);
 }
 
 // Mettre à jour le panier
@@ -1066,18 +1099,9 @@ function mettreAJourPanier() {
                     <div class="item-license">${item.license.name}</div>
                     <div class="item-license-select">
                         <label>Licence:</label>
-                        <div class="item-license-options" role="group" aria-label="Choisir une licence">
-                            ${getLicenseEntries().map((license) => `
-                                <button
-                                    type="button"
-                                    class="item-license-option${item.licenseKey === license.key ? ' is-active' : ''}"
-                                    onclick="changerLicence(${index}, '${license.key}')"
-                                >
-                                    <span>${license.name}</span>
-                                    <strong>${license.priceLabel}</strong>
-                                </button>
-                            `).join('')}
-                        </div>
+                        <select onchange="changerLicence(${index}, this.value)">
+                            ${getLicenseEntries().map((license) => `<option value="${license.key}" ${item.licenseKey === license.key ? 'selected' : ''}>${license.name} (${license.priceLabel})</option>`).join('')}
+                        </select>
                     </div>
                 </div>
             </div>
