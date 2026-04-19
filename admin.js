@@ -60,6 +60,7 @@ const adminBaseUrl = (() => {
 let dashboardBeats = [];
 let bulkReuploadInProgress = false;
 let selectedBeatIds = new Set();
+let hasInitializedBeatSelection = false;
 
 function resolveAdminUrl(path) {
     return new URL(path, `${adminBaseUrl}/`).toString();
@@ -104,10 +105,11 @@ function syncSelectedBeatIds(beats) {
     const validIds = new Set(beats.map((beat) => Number(beat.id)));
     selectedBeatIds = new Set([...selectedBeatIds].filter((id) => validIds.has(id)));
 
-    if (!selectedBeatIds.size) {
+    if (!hasInitializedBeatSelection && beats.length) {
         beats.forEach((beat) => {
             selectedBeatIds.add(Number(beat.id));
         });
+        hasInitializedBeatSelection = true;
     }
 }
 
