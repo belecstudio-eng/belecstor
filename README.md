@@ -55,19 +55,34 @@ Si `CONTACT_SMTP_USER` et `CONTACT_SMTP_PASS` sont configures, le serveur envoie
 
 GitHub Pages ne suffit pas pour ce projet complet, car il ne peut pas exécuter `server.js` ni stocker les commandes, paniers, logos, covers et fichiers audio côté serveur.
 
-Pour la mise en ligne complète, la configuration la plus directe pour ce dépôt reste Render avec disque persistant pour les données et médias.
+Pour la mise en ligne complète, vous avez deux options stables:
+
+- Render avec disque persistant en mode `filesystem`
+- Render avec MongoDB Atlas en mode `mongodb`
+
+Attention: sur un service Render Free sans disque persistant ni MongoDB, les beats téléversés depuis l'admin finissent par disparaître au redéploiement.
 
 Un guide pas à pas GitHub + Render est disponible dans [DEPLOY_RENDER_GITHUB.md](DEPLOY_RENDER_GITHUB.md).
 
 Une configuration alternative Railway + MongoDB Atlas reste documentée dans [DEPLOY_RAILWAY_MONGODB.md](DEPLOY_RAILWAY_MONGODB.md).
 
-Variables d'environnement recommandées:
+Variables d'environnement recommandées pour MongoDB:
 
 ```text
-PORT=3000
 STORAGE_BACKEND=mongodb
 MONGODB_URI=mongodb+srv://...
 MONGODB_DB_NAME=studio-belec
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=mot-de-passe-fort
+CONTACT_OWNER_EMAIL=belecstudio@gmail.com
+CONTACT_SMTP_USER=...
+CONTACT_SMTP_PASS=...
+```
+
+Variables d'environnement recommandées pour le mode fichier persistant:
+
+```text
+STORAGE_BACKEND=filesystem
 STORAGE_DIR=/var/data/studio-belec
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=mot-de-passe-fort
@@ -76,16 +91,13 @@ CONTACT_SMTP_USER=...
 CONTACT_SMTP_PASS=...
 ```
 
-STORAGE_BACKEND=filesystem
-STORAGE_DIR=/var/data/studio-belec
-
 EmailJS reste optionnel pour les notifications checkout.
 
 Le formulaire contact public passe maintenant par le serveur via `/api/contact`, donc par Gmail si `CONTACT_SMTP_USER` et `CONTACT_SMTP_PASS` sont configures.
 
 Remplissez [emailjs-config.js](emailjs-config.js) avec vos vraies valeurs:
 
-Sur Render, utilisez `STORAGE_BACKEND=filesystem` avec un disque persistant monte sur `/var/data/studio-belec`. L'option MongoDB reste possible si vous deployez plutot sur Railway.
+Sur Render, utilisez soit `STORAGE_BACKEND=filesystem` avec un disque persistant monté sur `/var/data/studio-belec`, soit `STORAGE_BACKEND=mongodb` avec `MONGODB_URI` et `MONGODB_DB_NAME` renseignés. MongoDB est l'option la plus sûre si vous ne voulez plus perdre les articles téléversés.
 window.EMAILJS_CONFIG = {
   publicKey: 'VOTRE_PUBLIC_KEY',
   serviceId: 'service_xxxxx',
