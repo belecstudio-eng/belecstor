@@ -1551,6 +1551,52 @@ function getNextBeatId(beats) {
   return beats.reduce((maxId, beat) => Math.max(maxId, Number(beat.id) || 0), 0) + 1;
 }
 
+async function getNextMongoBeatId() {
+  await ensureStorage();
+
+  const latestBeat = await mongoCollections.beats
+    .find({})
+    .sort({ id: -1 })
+    .limit(1)
+    .next();
+
+  return (Number(latestBeat?.id) || 0) + 1;
+}
+
+async function insertBeatRecord(beat) {
+  const normalizedBeat = normalizeBeat(beat);
+
+  if (USE_MONGODB) {
+    await ensureStorage();
+    await mongoCollections.beats.insertOne(normalizedBeat);
+    return normalizedBeat;
+  }
+
+  const data = await readData();
+  data.beats.unshift(normalizedBeat);
+  await writeData(data);
+  return normalizedBeat;
+}
+
+async function deleteBeatRecordById(beatId) {
+  if (USE_MONGODB) {
+    await ensureStorage();
+    const result = await mongoCollections.beats.findOneAndDelete({ id: beatId });
+    return result || null;
+  }
+
+  const data = await readData();
+  const beatIndex = data.beats.findIndex((beat) => beat.id === beatId);
+
+  if (beatIndex === -1) {
+    return null;
+  }
+
+  const [removedBeat] = data.beats.splice(beatIndex, 1);
+  await writeData(data);
+  return removedBeat;
+}
+
 async function deleteFileIfUnused(fileName, folderPath, fieldName, beats, bucketName = '') {
   if (!fileName) {
     return false;
@@ -2229,9 +2275,8 @@ app.post(
         storedAudioFileName = (await saveUploadedFileToGridFs('sons', audioFile)).filename;
       }
 
-      const data = await readData();
       const newBeat = normalizeBeat({
-        id: getNextBeatId(data.beats),
+        id: USE_MONGODB ? await getNextMongoBeatId() : getNextBeatId((await readData()).beats),
         nom,
         prix,
         fichier: USE_MONGODB ? storedAudioFileName : audioFile.filename,
@@ -2242,8 +2287,7 @@ app.post(
         downloads: 0
       });
 
-      data.beats.unshift(newBeat);
-      await writeData(data);
+      await insertBeatRecord(newBeat);
 
       res.status(201).json({
         message: 'Beat televerse avec succes.',
@@ -2344,16 +2388,14 @@ app.delete('/api/branding/logo', async (req, res) => {
 app.delete('/api/beats/:id', requireAdminAuth, async (req, res) => {
   try {
     const beatId = Number(req.params.id);
-    const data = await readData();
-    const beatIndex = data.beats.findIndex((beat) => beat.id === beatId);
+    const removedBeat = await deleteBeatRecordById(beatId);
 
-    if (beatIndex === -1) {
+    if (!removedBeat) {
       res.status(404).json({ error: 'Beat introuvable.' });
       return;
     }
 
-    const [removedBeat] = data.beats.splice(beatIndex, 1);
-    await writeData(data);
+    const data = await readData();
 
     const deletedCover = await deleteFileIfUnused(removedBeat.cover, COVERS_DIR, 'cover', data.beats, 'covers');
     const deletedAudio = await deleteFileIfUnused(removedBeat.fichier, AUDIO_DIR, 'fichier', data.beats, 'sons');
