@@ -4,6 +4,8 @@ const beatsList = document.getElementById('beatsList');
 const coversList = document.getElementById('coversList');
 const audiosList = document.getElementById('audiosList');
 const refreshBeatsBtn = document.getElementById('refreshBeatsBtn');
+const selectAllBeatsBtn = document.getElementById('selectAllBeatsBtn');
+const clearBeatSelectionBtn = document.getElementById('clearBeatSelectionBtn');
 const bulkReuploadBtn = document.getElementById('bulkReuploadBtn');
 const refreshMediaBtn = document.getElementById('refreshMediaBtn');
 const brandingForm = document.getElementById('brandingForm');
@@ -57,6 +59,7 @@ const adminBaseUrl = (() => {
 
 let dashboardBeats = [];
 let bulkReuploadInProgress = false;
+let selectedBeatIds = new Set();
 
 function resolveAdminUrl(path) {
     return new URL(path, `${adminBaseUrl}/`).toString();
@@ -79,19 +82,45 @@ function formatBytes(bytes) {
 }
 
 function updateBulkReuploadState() {
-    if (!bulkReuploadBtn) {
+    if (!bulkReuploadBtn || !selectAllBeatsBtn || !clearBeatSelectionBtn) {
         return;
     }
 
     const beatCount = dashboardBeats.length;
+    const selectedCount = selectedBeatIds.size;
     const label = bulkReuploadInProgress
         ? 'Re-televersement en cours...'
-        : beatCount > 0
-            ? `Re-televerser tout (${beatCount})`
-            : 'Re-televerser tout';
+        : selectedCount > 0
+            ? `Re-televerser la selection (${selectedCount})`
+            : 'Re-televerser la selection';
 
-    bulkReuploadBtn.disabled = bulkReuploadInProgress || beatCount === 0;
+    selectAllBeatsBtn.disabled = bulkReuploadInProgress || beatCount === 0 || selectedCount === beatCount;
+    clearBeatSelectionBtn.disabled = bulkReuploadInProgress || selectedCount === 0;
+    bulkReuploadBtn.disabled = bulkReuploadInProgress || selectedCount === 0;
     bulkReuploadBtn.innerHTML = `<i class="fas fa-cloud-arrow-up"></i> ${label}`;
+}
+
+function syncSelectedBeatIds(beats) {
+    const validIds = new Set(beats.map((beat) => Number(beat.id)));
+    selectedBeatIds = new Set([...selectedBeatIds].filter((id) => validIds.has(id)));
+
+    if (!selectedBeatIds.size) {
+        beats.forEach((beat) => {
+            selectedBeatIds.add(Number(beat.id));
+        });
+    }
+}
+
+function setAllBeatSelections(selected) {
+    if (!dashboardBeats.length) {
+        return;
+    }
+
+    selectedBeatIds = selected
+        ? new Set(dashboardBeats.map((beat) => Number(beat.id)))
+        : new Set();
+
+    renderBeats(dashboardBeats);
 }
 
 function showMessage(message, type = 'success') {
@@ -307,6 +336,7 @@ async function buildCroppedLogoFile() {
 
 function renderBeats(beats) {
     dashboardBeats = Array.isArray(beats) ? [...beats] : [];
+    syncSelectedBeatIds(dashboardBeats);
     updateBulkReuploadState();
 
     if (!beats.length) {
@@ -318,6 +348,10 @@ function renderBeats(beats) {
     beatsList.className = 'admin-list';
     beatsList.innerHTML = beats.map((beat) => `
         <article class="beat-admin-item">
+            <label class="beat-admin-select" aria-label="Selectionner ${escapeHtml(beat.nom)}">
+                <input type="checkbox" data-select-beat="${beat.id}" ${selectedBeatIds.has(Number(beat.id)) ? 'checked' : ''}>
+                <span class="beat-admin-checkbox"></span>
+            </label>
             <img class="beat-admin-cover" src="covers/${encodeURIComponent(beat.cover)}" alt="${beat.nom}">
             <div>
                 <div class="beat-admin-title">${beat.nom}</div>
@@ -354,6 +388,20 @@ function renderBeats(beats) {
                 showMessage(error.message, 'error');
                 button.disabled = false;
             }
+        });
+    });
+
+    beatsList.querySelectorAll('[data-select-beat]').forEach((input) => {
+        input.addEventListener('change', () => {
+            const beatId = Number(input.getAttribute('data-select-beat'));
+
+            if (input.checked) {
+                selectedBeatIds.add(beatId);
+            } else {
+                selectedBeatIds.delete(beatId);
+            }
+
+            updateBulkReuploadState();
         });
     });
 }
@@ -395,8 +443,15 @@ async function handleBulkReupload() {
         return;
     }
 
+    const selectedBeats = dashboardBeats.filter((beat) => selectedBeatIds.has(Number(beat.id)));
+
+    if (!selectedBeats.length) {
+        showMessage('Selectionnez au moins un beat a re-televerser.', 'error');
+        return;
+    }
+
     const confirmed = window.confirm(
-        `Re-televerser les ${dashboardBeats.length} beats visibles dans le stockage actuel ? Cela ajoutera de nouveaux beats.`
+        `Re-televerser les ${selectedBeats.length} beats selectionnes dans le stockage actuel ? Cela ajoutera de nouveaux beats.`
     );
 
     if (!confirmed) {
@@ -410,8 +465,8 @@ async function handleBulkReupload() {
     let successCount = 0;
 
     try {
-        for (const [index, beat] of dashboardBeats.entries()) {
-            showMessage(`Re-televersement ${index + 1}/${dashboardBeats.length} : ${beat.nom}`, 'success');
+        for (const [index, beat] of selectedBeats.entries()) {
+            showMessage(`Re-televersement ${index + 1}/${selectedBeats.length} : ${beat.nom}`, 'success');
 
             try {
                 await reuploadBeat(beat);
@@ -575,6 +630,18 @@ if (bulkReuploadBtn) {
             updateBulkReuploadState();
             showMessage(error.message, 'error');
         });
+    });
+}
+
+if (selectAllBeatsBtn) {
+    selectAllBeatsBtn.addEventListener('click', () => {
+        setAllBeatSelections(true);
+    });
+}
+
+if (clearBeatSelectionBtn) {
+    clearBeatSelectionBtn.addEventListener('click', () => {
+        setAllBeatSelections(false);
     });
 }
 

@@ -500,9 +500,49 @@ body.branding-crop-open {
 
 .beat-admin-item {
     display: grid;
-    grid-template-columns: 96px minmax(0, 1fr) auto;
+    grid-template-columns: auto 96px minmax(0, 1fr) auto;
     gap: 1rem;
     align-items: center;
+}
+
+.beat-admin-select {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.beat-admin-select input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.beat-admin-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--admin-border);
+    background: var(--panel-bg);
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.beat-admin-select input:checked + .beat-admin-checkbox {
+    background: var(--black);
+    border-color: var(--black);
+}
+
+.beat-admin-select input:checked + .beat-admin-checkbox::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 .beat-admin-cover {
