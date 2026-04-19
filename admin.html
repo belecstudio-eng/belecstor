@@ -150,9 +150,14 @@
                 <div class="admin-card">
                     <div class="section-title-row">
                         <h2>Beats televerses</h2>
-                        <button class="refresh-btn" id="refreshBeatsBtn" type="button">
-                            <i class="fas fa-rotate-right"></i> Actualiser
-                        </button>
+                        <div class="admin-inline-actions">
+                            <button class="admin-secondary-btn" id="bulkReuploadBtn" type="button" disabled>
+                                <i class="fas fa-cloud-arrow-up"></i> Re-televerser tout
+                            </button>
+                            <button class="refresh-btn" id="refreshBeatsBtn" type="button">
+                                <i class="fas fa-rotate-right"></i> Actualiser
+                            </button>
+                        </div>
                     </div>
                     <div id="beatsList" class="admin-list empty-state">Chargement...</div>
                 </div>

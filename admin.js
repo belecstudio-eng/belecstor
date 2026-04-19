@@ -4,6 +4,7 @@ const beatsList = document.getElementById('beatsList');
 const coversList = document.getElementById('coversList');
 const audiosList = document.getElementById('audiosList');
 const refreshBeatsBtn = document.getElementById('refreshBeatsBtn');
+const bulkReuploadBtn = document.getElementById('bulkReuploadBtn');
 const refreshMediaBtn = document.getElementById('refreshMediaBtn');
 const brandingForm = document.getElementById('brandingForm');
 const siteLogoInput = document.getElementById('siteLogo');
@@ -54,6 +55,9 @@ const adminBaseUrl = (() => {
     return currentUrl.origin;
 })();
 
+let dashboardBeats = [];
+let bulkReuploadInProgress = false;
+
 function resolveAdminUrl(path) {
     return new URL(path, `${adminBaseUrl}/`).toString();
 }
@@ -72,6 +76,22 @@ function formatBytes(bytes) {
     }
 
     return `${(bytes / (1024 * 1024)).toFixed(2)} Mo`;
+}
+
+function updateBulkReuploadState() {
+    if (!bulkReuploadBtn) {
+        return;
+    }
+
+    const beatCount = dashboardBeats.length;
+    const label = bulkReuploadInProgress
+        ? 'Re-televersement en cours...'
+        : beatCount > 0
+            ? `Re-televerser tout (${beatCount})`
+            : 'Re-televerser tout';
+
+    bulkReuploadBtn.disabled = bulkReuploadInProgress || beatCount === 0;
+    bulkReuploadBtn.innerHTML = `<i class="fas fa-cloud-arrow-up"></i> ${label}`;
 }
 
 function showMessage(message, type = 'success') {
@@ -286,6 +306,9 @@ async function buildCroppedLogoFile() {
 }
 
 function renderBeats(beats) {
+    dashboardBeats = Array.isArray(beats) ? [...beats] : [];
+    updateBulkReuploadState();
+
     if (!beats.length) {
         beatsList.className = 'admin-list empty-state';
         beatsList.textContent = 'Aucun beat televerse pour le moment.';
@@ -333,6 +356,86 @@ function renderBeats(beats) {
             }
         });
     });
+}
+
+async function fetchMediaAsFile(url, fileName, fallbackType) {
+    const response = await fetch(resolveAdminUrl(url), { cache: 'no-store' });
+
+    if (!response.ok) {
+        throw new Error(`Impossible de recuperer le fichier ${fileName}.`);
+    }
+
+    const blob = await response.blob();
+    return new File([blob], fileName, { type: blob.type || fallbackType });
+}
+
+async function reuploadBeat(beat) {
+    const [coverFile, audioFile] = await Promise.all([
+        fetchMediaAsFile(`/covers/${encodeURIComponent(beat.cover)}`, beat.cover, 'image/png'),
+        fetchMediaAsFile(`/sons/${encodeURIComponent(beat.fichier)}`, beat.fichier, 'audio/mpeg')
+    ]);
+
+    const formData = new FormData();
+    formData.append('nom', String(beat.nom || ''));
+    formData.append('prix', String(Number(beat.prix) || 0));
+    formData.append('bpm', String(Number(beat.bpm) || 0));
+    formData.append('style', String(beat.style || ''));
+    formData.append('producteur', String(beat.producteur || 'STUDIO BELEC'));
+    formData.append('cover', coverFile, coverFile.name);
+    formData.append('audio', audioFile, audioFile.name);
+
+    return fetchJson('/api/beats', {
+        method: 'POST',
+        body: formData
+    });
+}
+
+async function handleBulkReupload() {
+    if (!dashboardBeats.length || bulkReuploadInProgress) {
+        return;
+    }
+
+    const confirmed = window.confirm(
+        `Re-televerser les ${dashboardBeats.length} beats visibles dans le stockage actuel ? Cela ajoutera de nouveaux beats.`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    bulkReuploadInProgress = true;
+    updateBulkReuploadState();
+
+    const failures = [];
+    let successCount = 0;
+
+    try {
+        for (const [index, beat] of dashboardBeats.entries()) {
+            showMessage(`Re-televersement ${index + 1}/${dashboardBeats.length} : ${beat.nom}`, 'success');
+
+            try {
+                await reuploadBeat(beat);
+                successCount += 1;
+            } catch (error) {
+                failures.push(`${beat.nom}: ${error.message}`);
+            }
+        }
+
+        await loadDashboard();
+
+        if (failures.length) {
+            showMessage(
+                `${successCount} beat(s) re-televerse(s), ${failures.length} echec(s). ${failures.slice(0, 3).join(' | ')}`,
+                'error'
+            );
+            return;
+        }
+
+        showMessage(`${successCount} beat(s) re-televerse(s) avec succes.`, 'success');
+    } finally {
+        bulkReuploadInProgress = false;
+        updateBulkReuploadState();
+    }
 }
 
 function renderBranding(branding) {
@@ -464,6 +567,16 @@ uploadForm.addEventListener('submit', async (event) => {
 
 refreshBeatsBtn.addEventListener('click', loadBeats);
 refreshMediaBtn.addEventListener('click', loadMedia);
+
+if (bulkReuploadBtn) {
+    bulkReuploadBtn.addEventListener('click', () => {
+        handleBulkReupload().catch((error) => {
+            bulkReuploadInProgress = false;
+            updateBulkReuploadState();
+            showMessage(error.message, 'error');
+        });
+    });
+}
 
 if (openOrdersPageBtn) {
     openOrdersPageBtn.addEventListener('click', () => {
@@ -672,6 +785,7 @@ if (brandingForm) {
 
 renderLogoDraftPreview();
 syncBrandingActionState();
+updateBulkReuploadState();
 
 if (deleteLogoBtn) {
     deleteLogoBtn.addEventListener('click', async () => {

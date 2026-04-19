@@ -106,6 +106,13 @@ body[data-theme="midnight"] .admin-card {
     margin-bottom: 1rem;
 }
 
+.admin-inline-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 .section-title-row h2,
 .media-columns h3 {
     margin: 0;
