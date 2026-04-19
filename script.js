@@ -20,16 +20,28 @@ function normalizeBeat(beat) {
 
 async function loadBeatsData() {
     try {
-        const response = await fetch('data.json', { cache: 'no-store' });
+        const response = await fetch('/api/beats', { cache: 'no-store' });
         if (!response.ok) {
-            throw new Error('Lecture data.json impossible');
+            throw new Error('Lecture /api/beats impossible');
         }
 
         const payload = await response.json();
         beats = Array.isArray(payload.beats) ? payload.beats.map(normalizeBeat) : [];
     } catch (error) {
-        console.warn('Chargement des beats via data.json impossible, fallback local utilise.', error);
-        beats = [...DEFAULT_BEATS];
+        console.warn('Chargement des beats via /api/beats impossible, fallback data.json utilise.', error);
+
+        try {
+            const fallbackResponse = await fetch('data.json', { cache: 'no-store' });
+            if (!fallbackResponse.ok) {
+                throw new Error('Lecture data.json impossible');
+            }
+
+            const fallbackPayload = await fallbackResponse.json();
+            beats = Array.isArray(fallbackPayload.beats) ? fallbackPayload.beats.map(normalizeBeat) : [];
+        } catch (fallbackError) {
+            console.warn('Chargement des beats via data.json impossible, fallback local utilise.', fallbackError);
+            beats = [...DEFAULT_BEATS];
+        }
     }
 
     beatsFiltres = [...beats];

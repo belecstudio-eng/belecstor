@@ -22,15 +22,27 @@ async function ensureBeatsLoaded(targetBeatId = null) {
     }
 
     try {
-        const response = await fetch('data.json', { cache: 'no-store' });
+        const response = await fetch('/api/beats', { cache: 'no-store' });
         if (!response.ok) {
-            throw new Error('Lecture data.json impossible');
+            throw new Error('Lecture /api/beats impossible');
         }
 
         const payload = await response.json();
         beats = Array.isArray(payload.beats) ? payload.beats : beats;
     } catch (error) {
-        console.warn('Chargement des beats produit impossible, fallback utilise.', error);
+        console.warn('Chargement des beats produit via /api/beats impossible, fallback data.json utilise.', error);
+
+        try {
+            const fallbackResponse = await fetch('data.json', { cache: 'no-store' });
+            if (!fallbackResponse.ok) {
+                throw new Error('Lecture data.json impossible');
+            }
+
+            const fallbackPayload = await fallbackResponse.json();
+            beats = Array.isArray(fallbackPayload.beats) ? fallbackPayload.beats : beats;
+        } catch (fallbackError) {
+            console.warn('Chargement des beats produit impossible, fallback utilise.', fallbackError);
+        }
     }
 
     return beats;
