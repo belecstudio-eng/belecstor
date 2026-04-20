@@ -38,6 +38,7 @@ const MONGODB_URI = String(process.env.MONGODB_URI || '').trim();
 const MONGODB_DB_NAME = String(process.env.MONGODB_DB_NAME || '').trim() || 'studio-belec';
 const STORAGE_BACKEND = String(process.env.STORAGE_BACKEND || (MONGODB_URI ? 'mongodb' : 'filesystem')).trim().toLowerCase() || 'filesystem';
 const USE_MONGODB = STORAGE_BACKEND === 'mongodb';
+const REMOTE_MEDIA_BASE_URL = String(process.env.REMOTE_MEDIA_BASE_URL || 'https://belecstorrz.onrender.com').trim().replace(/\/+$/, '');
 const PAYMENT_DEPOSIT_NUMBER = process.env.PAYMENT_DEPOSIT_NUMBER || '0575335641';
 const DEFAULT_WAVE_PAYMENT_URL = 'https://pay.wave.com/m/M_ci_rX_FR053YqGI/c/ci/';
 const WAVE_PAYMENT_URL = String(process.env.WAVE_PAYMENT_URL || DEFAULT_WAVE_PAYMENT_URL).trim() || DEFAULT_WAVE_PAYMENT_URL;
@@ -800,6 +801,11 @@ async function sendGridFsFile(bucketName, fileName, res) {
   const file = await findLatestGridFsFile(bucketName, fileName);
 
   if (!file) {
+    if (REMOTE_MEDIA_BASE_URL && (bucketName === 'covers' || bucketName === 'sons')) {
+      res.redirect(302, `${REMOTE_MEDIA_BASE_URL}/${bucketName}/${encodeURIComponent(fileName)}`);
+      return;
+    }
+
     res.status(404).send('Fichier introuvable.');
     return;
   }
@@ -827,13 +833,34 @@ async function listGridFsMediaFiles(bucketName, type, fieldName, beats) {
     .sort({ filename: 1 })
     .toArray();
 
-  return files.map((file) => ({
+  const items = files.map((file) => ({
     name: file.filename,
     type,
     size: Number(file.length) || 0,
     url: `/${type}/${encodeURIComponent(file.filename)}`,
     usedBy: beats.filter((beat) => beat[fieldName] === file.filename).map((beat) => beat.id)
   }));
+
+  const knownNames = new Set(items.map((item) => item.name));
+
+  beats.forEach((beat) => {
+    const fileName = String(beat[fieldName] || '').trim();
+
+    if (!fileName || knownNames.has(fileName)) {
+      return;
+    }
+
+    items.push({
+      name: fileName,
+      type,
+      size: 0,
+      url: `/${type}/${encodeURIComponent(fileName)}`,
+      usedBy: beats.filter((item) => item[fieldName] === fileName).map((item) => item.id)
+    });
+    knownNames.add(fileName);
+  });
+
+  return items.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 async function loadJsonSeedFile(sourceFile, fallbackValue) {
